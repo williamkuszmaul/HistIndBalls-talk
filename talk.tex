@@ -179,8 +179,8 @@
     % \node[font=\small, anchor=north] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},2.8) {$S_1 = x_1,x_2,x_3,x_4,{\color{blue}x^{\star}},\ldots$};
 
     % world labels below bins
-    \node[font=\normalsize\bfseries] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {World 0};
-    \node[font=\normalsize\bfseries] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {World 1};
+    \node[font=\normalsize\bfseries] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {Computing $\texttt{Greedy}(S)$};
+    \node[font=\normalsize\bfseries] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {Computing $\texttt{Greedy}(S \cup \{x^*\})$};
 
     % bin-top coords for arrows
     \foreach \b in {1,2,3,4}{
@@ -485,20 +485,24 @@ Yes! We get {\color{blue}recourse $O(\log \log (m/n))$} and {\color{blue}overloa
   \begin{itemize}
   \item {\color{blue}Overload $O(1)$}, with high probability.
   \item Expected {\color{blue}recourse $O(\log \log (m/n))$}.
-  \end{itemize}
+  \end{itemize} \pause
+
+  \vspace{1 cm}
+
+  \textbf{Rest of Talk: }A simple history-independent algorithm with {\color{blue}overload $O(\log \log n)$} and \color{blue} expected recourse $O(m/n)$.
 \end{frame}
 
-\begin{frame}{}
+% \begin{frame}{}
 
-\vspace{2 cm}
+% \vspace{2 cm}
 
-\huge
+% \huge
 
-\begin{center}
-\textbf{Rest of Talk: } \\
-Outlining a Solution with \\ Overload $O(\log \log n)$ \\ and Expected Recourse $O(m/n)$. 
-\end{center}
-\end{frame}
+% \begin{center}
+% \textbf{Rest of Talk: } \\
+% Outlining a Solution with \\ Overload $O(\log \log n)$ \\ and Expected Recourse $O(m/n)$. 
+% \end{center}
+% \end{frame}
 
 \begin{frame}{Warmup 1: The Single-Choice Strategy}
 
@@ -649,8 +653,155 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 
 \end{frame}
 
-\begin{frame}{Turning Greedy into a History-Independent Solution}
+\begin{frame}{A Simple History-Independent Algorithm}
+
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.8]
+      % Define bin dimensions
+      \def\binwidth{0.6}
+      \def\ballradius{0.2}
+      \def\binspacing{1.0}
+      
+      % Draw 7 bins as cups
+      \def\sideheight{0.15}
+      \foreach \i in {0,...,6} {
+        \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
+      }
+      
+      % Add balls to bins
+      % Bin 0: 3 balls
+      \foreach \j in {1,2,3} {
+        \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 1: 5 balls (one of x's choices - fuller)
+      \foreach \j in {1,2,3,4,5} {
+        \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 2: 4 balls
+      \foreach \j in {1,2,3,4} {
+        \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 3: 3 balls
+      \foreach \j in {1,2,3} {
+        \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 4: 2 balls (one of x's choices - emptier, x goes here!)
+      \foreach \j in {1,2} {
+        \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 5: 4 balls
+      \foreach \j in {1,2,3,4} {
+        \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 6: 3 balls
+      \foreach \j in {1,2,3} {
+        \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      
+      % Ball x being inserted (centered above)
+      \fill[black] (2.5*\binspacing + \binwidth/2, 3.5) circle (\ballradius);
+      \node[above] at (2.5*\binspacing + \binwidth/2, 3.5 + \ballradius) {$x$};
+      
+      % Two arrows to choices - bin 1 (fuller) and bin 4 (emptier)
+      \draw[->, thick, gray] (2.5*\binspacing + \binwidth/2 - 0.1, 3.5 - \ballradius) to[out=-150, in=90] (1*\binspacing + \binwidth/2, 5*0.45 + \ballradius);
+      \node[left, gray] at (1.3, 2.8) {$h_1(x)$};
+      
+      \draw[->, thick, blue, line width=1.5pt] (2.5*\binspacing + \binwidth/2 + 0.1, 3.5 - \ballradius) to[out=-30, in=90] (4*\binspacing + \binwidth/2, 2*0.45 + \ballradius);
+      \node[right, blue] at (4.0, 2.8) {$h_2(x)$};
+      
+      % Label: n bins
+      \draw[<->] (0, -0.4) -- (6*\binspacing + \binwidth, -0.4);
+      \node[below, blue] at (3*\binspacing + \binwidth/2, -0.4) {$n$ bins};
+      
+    \end{tikzpicture}
+    \end{center}
+    
+
+
+Given a set $S$ of balls, define $\texttt{Greedy}(S)$ as:
+\begin{itemize}
+\item Start with empty bins.
+\item Sort the balls in $S$ to get a sequence $x_1, x_2, \ldots$.
+\item Insert $x_1, x_2, \ldots$ using the greedy algorithm. 
+\end{itemize} \pause
+
+\vspace{.2 cm}
+
+\textbf{A History-Independent Algorithm:} At any given moment, if $S$ is the current set of balls, use allocation $\texttt{Greedy}(S)$.
+
 \end{frame}
+
+\begin{frame}{Analyzing History-Independent Greedy}
+
+  \begin{center}
+    \begin{tikzpicture}[scale=0.8]
+      % Define bin dimensions
+      \def\binwidth{0.6}
+      \def\ballradius{0.2}
+      \def\binspacing{1.0}
+      
+      % Draw 7 bins as cups
+      \def\sideheight{0.15}
+      \foreach \i in {0,...,6} {
+        \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
+      }
+      
+      % Add balls to bins
+      % Bin 0: 3 balls
+      \foreach \j in {1,2,3} {
+        \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 1: 5 balls (one of x's choices - fuller)
+      \foreach \j in {1,2,3,4,5} {
+        \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 2: 4 balls
+      \foreach \j in {1,2,3,4} {
+        \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 3: 3 balls
+      \foreach \j in {1,2,3} {
+        \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 4: 2 balls (one of x's choices - emptier, x goes here!)
+      \foreach \j in {1,2} {
+        \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 5: 4 balls
+      \foreach \j in {1,2,3,4} {
+        \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      % Bin 6: 3 balls
+      \foreach \j in {1,2,3} {
+        \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+      }
+      
+      % Ball x being inserted (centered above)
+      \fill[black] (2.5*\binspacing + \binwidth/2, 3.5) circle (\ballradius);
+      \node[above] at (2.5*\binspacing + \binwidth/2, 3.5 + \ballradius) {$x$};
+      
+      % Two arrows to choices - bin 1 (fuller) and bin 4 (emptier)
+      \draw[->, thick, gray] (2.5*\binspacing + \binwidth/2 - 0.1, 3.5 - \ballradius) to[out=-150, in=90] (1*\binspacing + \binwidth/2, 5*0.45 + \ballradius);
+      \node[left, gray] at (1.3, 2.8) {$h_1(x)$};
+      
+      \draw[->, thick, blue, line width=1.5pt] (2.5*\binspacing + \binwidth/2 + 0.1, 3.5 - \ballradius) to[out=-30, in=90] (4*\binspacing + \binwidth/2, 2*0.45 + \ballradius);
+      \node[right, blue] at (4.0, 2.8) {$h_2(x)$};
+      
+      % Label: n bins
+      \draw[<->] (0, -0.4) -- (6*\binspacing + \binwidth, -0.4);
+      \node[below, blue] at (3*\binspacing + \binwidth/2, -0.4) {$n$ bins};
+      
+    \end{tikzpicture}
+    \end{center}
+
+    \begin{itemize}
+    \item The algorithm is history independent \hspace{0.3em}{\color{blue}\ding{51}}  \pause 
+    \item The overload is $O(\log \log n)$ \hspace{0.3em}{\color{blue}\ding{51}} \pause 
+    \item But what about the recourse?
+    \end{itemize}
+\end{frame}
+
 
 % ============== Two-World Slides ==============
 
@@ -659,12 +810,7 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 \TopSeq
 \TwoWorldFigure{ }{ }
 \vfill
-\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
-}
+How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 \end{frame}
 
 % --- Frame 12 (PDF p12): x1 chooses among 2 bins ---
@@ -679,10 +825,10 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
+% \begin{itemize}
+% \item Two identical worlds, same insertion sequence
+% \item World 1 will later receive one extra ball $x^{\star}$
+% \end{itemize}
 }
 \end{frame}
 
@@ -696,10 +842,10 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
+% \begin{itemize}
+% \item Two identical worlds, same insertion sequence
+% \item World 1 will later receive one extra ball $x^{\star}$
+% \end{itemize}
 }
 \end{frame}
 
@@ -717,10 +863,10 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
+% \begin{itemize}
+% \item Two identical worlds, same insertion sequence
+% \item World 1 will later receive one extra ball $x^{\star}$
+% \end{itemize}
 }
 \end{frame}
 
@@ -736,10 +882,10 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
+% \begin{itemize}
+% \item Two identical worlds, same insertion sequence
+% \item World 1 will later receive one extra ball $x^{\star}$
+% \end{itemize}
 }
 \end{frame}
 
@@ -759,10 +905,10 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
+% \begin{itemize}
+% \item Two identical worlds, same insertion sequence
+% \item World 1 will later receive one extra ball $x^{\star}$
+% \end{itemize}
 }
 \end{frame}
 
@@ -780,10 +926,10 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
+% \begin{itemize}
+% \item Two identical worlds, same insertion sequence
+% \item World 1 will later receive one extra ball $x^{\star}$
+% \end{itemize}
 }
 \end{frame}
 
@@ -805,10 +951,10 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
+% \begin{itemize}
+% \item Two identical worlds, same insertion sequence
+% \item World 1 will later receive one extra ball $x^{\star}$
+% \end{itemize}
 }
 \end{frame}
 
@@ -828,10 +974,10 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item Two identical worlds, same insertion sequence
-\item World 1 will later receive one extra ball $x^{\star}$
-\end{itemize}
+% \begin{itemize}
+% \item Two identical worlds, same insertion sequence
+% \item World 1 will later receive one extra ball $x^{\star}$
+% \end{itemize}
 }
 \end{frame}
 
@@ -1002,7 +1148,9 @@ Future insertions will experience either:
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (2.575,1.5) {$x_6$};
   \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 Future insertions will experience either:
 \begin{enumerate}
@@ -1062,7 +1210,9 @@ Future insertions will experience either:
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.2,1.5) {$x_7$};
   \foreach \b in {2,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 Future insertions will experience either:
 \begin{enumerate}
@@ -1092,7 +1242,9 @@ Future insertions will experience either:
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 Future insertions will experience either:
 \begin{enumerate}
@@ -1122,7 +1274,9 @@ Future insertions will experience either:
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 Future insertions will experience either:
 \begin{enumerate}
@@ -1157,7 +1311,9 @@ Future insertions will experience either:
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.2,1.5) {$x_8$};
   \foreach \b in {1,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 Future insertions will experience either:
 \begin{enumerate}
@@ -1223,7 +1379,9 @@ Future insertions will experience either:
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{}{}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 Future insertions will experience either:
 \begin{enumerate}
@@ -1260,7 +1418,9 @@ Future insertions will experience either:
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (1.95,1.5) {$x_9$};
   \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 Future insertions will experience either:
 \begin{enumerate}
@@ -1370,7 +1530,7 @@ Future insertions will experience either:
 Two key observations: \pause
 \begin{enumerate}
 \item There's always one special bin with an extra ball \pause
-\item Recourse requires the special bin as one of the two choices
+\item If a ball incurs recourse, one of its choices is the special bin
 \end{enumerate}
 }
 \end{frame}
@@ -1400,7 +1560,9 @@ Two key observations: \pause
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{}{}
 }
-\vfill
+
+\vspace{-.3 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 \[
 \Pr[\text{ball } x_i \text{ incurs recourse}] = O(1/n)
@@ -1410,6 +1572,25 @@ Two key observations: \pause
 \implies \mathbb{E}[\text{total recourse}] = \sum_{i} \Pr[\text{ball } x_i \text{ incurs recourse}] = O(m/n)
 \]
 }
+\end{frame}
+
+\begin{frame}{This Paper}
+
+  \vspace{1 cm}
+
+  \textbf{Question: }Does there exist a {\color{blue}history-independent} solution with small {\color{blue}recourse} and {\color{blue}overload}? 
+
+  \vspace{1 cm}
+
+  \textbf{Theorem: }There exists a {\color{blue}history-independent} solution with:
+  \begin{itemize}
+  \item {\color{blue}Overload $O(1)$}, with high probability.
+  \item Expected {\color{blue}recourse $O(\log \log (m/n))$}.
+  \end{itemize} \pause
+
+  \vspace{1 cm}
+
+  \textbf{Rest of Talk: }A simple history-independent algorithm with {\color{blue}overload $O(\log \log n)$} and \color{blue} expected recourse $O(m/n)$.
 \end{frame}
 
 \end{document}
