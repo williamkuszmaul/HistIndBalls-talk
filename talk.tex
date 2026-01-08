@@ -457,7 +457,7 @@ they would learn only the current set of elements, and nothing else about the hi
   \end{itemize}
 \end{frame}
 
-\begin{frame}{What About Non-History-Independent Solutions?}
+\begin{frame}{What About Non-History-Independent Solutions?} \pause
 
 Lots of work on the insertion-only case. 
 \\
@@ -473,12 +473,12 @@ But the fully dynamic case has remained largely open. \\
 \vspace{.2 cm}
 
 \textbf{Open Question: }\\
-Is there a {\color{blue}fully dynamic} solution with {\color{blue}recourse $o(m/n)$} and {\color{blue}overload $O(1)$}? \pause
+Is there a {\color{blue}fully dynamic} solution with {\color{blue}recourse $o(m/n)$} and {\color{blue}overload $O(\log \log n)$}? \pause
 
 \vspace{.2 cm}
 
 \textbf{Answer: }\\ 
-Yes! We get {\color{blue}recourse $O(\log \log (m/n))$} and {\color{blue}overload $O(1)$}!
+Yes! We get {\color{blue}recourse $O(\log \log (m/n))$} and {\color{blue}overload $O(1)$}.
 
 \end{frame}
 
@@ -576,7 +576,7 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 \end{center}
 
 \pause
-\begin{itemize}
+\begin{itemize} 
 \item This is history-independent \hspace{0.3em}{\color{blue}\ding{51}} \pause
 \item The recourse is 0 \hspace{0.3em}{\color{blue}\ding{51}} \pause
 \item But... the overload is huge, roughly $\sqrt{m/n}$ \hspace{0.3em}{\color{red}\ding{55}}
@@ -647,7 +647,7 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 \end{tikzpicture}
 \end{center}
 
-
+\pause
 
   \begin{itemize}
   \item This is \textbf{not} history-independent  \hspace{0.3em}{\color{red}\ding{55}} \pause
@@ -804,6 +804,7 @@ Given a set $S$ of balls, define $\texttt{Greedy}(S)$ as:
     \end{tikzpicture}
     \end{center}
 
+    \pause
     \begin{itemize}
     \item The algorithm is history independent \hspace{0.3em}{\color{blue}\ding{51}}  \pause 
     \item The overload is $O(\log \log n)$ \hspace{0.3em}{\color{blue}\ding{51}} \pause 
@@ -1008,9 +1009,9 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item $x^{\star}$ arrives only in World 1
-\end{itemize}
+% \begin{itemize}
+% \item $x^{\star}$ arrives only in World 1
+% \end{itemize}
 }
 \end{frame}
 
@@ -1031,9 +1032,9 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
-\begin{itemize}
-\item $x^{\star}$ arrives only in World 1
-\end{itemize}
+% \begin{itemize}
+% \item $x^{\star}$ arrives only in World 1
+% \end{itemize}
 }
 \end{frame}
 
@@ -1054,7 +1055,7 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 }
 \vfill
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-\textbf{Question:} How do subsequent insertions differ between the two worlds?
+% \textbf{Question:} How do subsequent insertions differ between the two worlds?
 }
 \end{frame}
 
@@ -1073,9 +1074,11 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either: \pause
+Subsequent balls will experience either: \pause
 \begin{enumerate}
 \item No recourse
 \end{enumerate}
@@ -1101,7 +1104,9 @@ Future insertions will experience either: \pause
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (2.575,1.5) {$x_5$};
   \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
 Future insertions will experience either:
 \begin{enumerate}
@@ -1127,9 +1132,11 @@ Future insertions will experience either:
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vfill
+
+\vspace{.2 cm}
+
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \end{enumerate}
@@ -1161,7 +1168,7 @@ Future insertions will experience either:
 \vspace{.2 cm}
 
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \end{enumerate}
@@ -1189,7 +1196,7 @@ Future insertions will experience either:
 }
 \vfill
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \end{enumerate}
@@ -1223,7 +1230,7 @@ Future insertions will experience either:
 \vspace{.2 cm}
 
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \end{enumerate}
@@ -1255,7 +1262,7 @@ Future insertions will experience either:
 \vspace{.2 cm}
 
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \end{enumerate}
@@ -1287,7 +1294,7 @@ Future insertions will experience either:
 \vspace{.2 cm}
 
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \item Recourse
@@ -1324,7 +1331,7 @@ Future insertions will experience either:
 \vspace{.2 cm}
 
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \item Recourse
@@ -1357,7 +1364,7 @@ Future insertions will experience either:
 }
 \vfill
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \item Recourse
@@ -1392,7 +1399,7 @@ Future insertions will experience either:
 \vspace{.2 cm}
 
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \item Recourse
@@ -1431,7 +1438,7 @@ Future insertions will experience either:
 \vspace{.2 cm}
 
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \item Recourse
@@ -1466,7 +1473,7 @@ Future insertions will experience either:
 }
 \vfill
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \item Recourse
@@ -1501,7 +1508,7 @@ Future insertions will experience either:
 }
 \vfill
 \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-Future insertions will experience either:
+Subsequent balls will experience either:
 \begin{enumerate}
 \item No recourse
 \item Recourse
@@ -1599,7 +1606,7 @@ Two key observations: \pause
 
   \vspace{1 cm}
 
-  \textbf{Rest of Talk: }A simple history-independent algorithm with {\color{blue}overload $O(\log \log n)$} and \color{blue} expected recourse $O(m/n)$.
+  \textbf{Rest of Talk: }A simple history-independent algorithm with {\color{blue}overload $O(\log \log n)$} and \color{blue} expected recourse $O(m/n)$. \hspace{0.3em}{\color{blue}\ding{51}}
 \end{frame}
 
 \begin{frame}[plain]
