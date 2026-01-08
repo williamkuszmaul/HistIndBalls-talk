@@ -117,15 +117,20 @@
 % ---------- TikZ helpers for Two-World slides (improved) ----------
 % Dimensions (scaled down for better fit)
 \def\binw{0.9}
-\def\binh{2.2}
+\def\binh{0.3}
 \def\bingap{0.35}
-\def\biny{0}
+\def\biny{-1.9}
 \def\ballsize{0.52cm}
-\def\ballspacing{0.58}
+\def\ballspacing{0.625}
 
-% World positions (centered better)
-\def\xL{-5.0}
-\def\xR{1.2}
+% World positions so that the bin groups are centered in the left/right halves
+% of the slide, using Beamer's default \paperwidth = 12.8cm.
+% We model the slide width as [-6.4,6.4] in our x-coordinates (1 unit = 1cm),
+% so the 25% and 75% positions are at x = -3.2 and x = +3.2.
+% Each group has width W = 4*(\binw) + 3*(\bingap) = 4.65, so the starting
+% x-positions are center - W/2.
+\def\xL{-5.525} % left world: [-5.525, -0.875], centered at -3.2
+\def\xR{0.875}  % right world: [0.875, 5.525], centered at +3.2
 
 \newcommand{\DrawBinsAt}[1]{% xstart
   \foreach \i in {0,1,2,3}{
@@ -151,22 +156,31 @@
 \newcommand{\TopSeq}{}% Now integrated into TwoWorldFigure
 
 \newcommand{\TwoWorldFigure}[2]{% extra tikz for world0 balls, world1 balls
-  \begin{center}
+  % Center the entire picture with respect to the full slide width (\paperwidth).
+  % Shift left by half of (paperwidth - textwidth) to compensate for the theme's
+  % right-shift of the text area.
+  \noindent\hspace*{-0.5\dimexpr\paperwidth-\textwidth\relax}%
+  \makebox[\paperwidth][c]{%
   \begin{tikzpicture}[x=1cm,y=1cm,scale=0.95]
+    % Fix the bounding box to be symmetric around x=0 with total width equal
+    % to Beamer's default \paperwidth = 12.8cm, i.e., [-6.4,6.4].
+    \path[use as bounding box] (-6.4,-3.0) rectangle (6.4,3.0);
+    % Debug guide (commented out):
+    % \draw[dashed, very thin, gray!50] (-6.4,-3.0) rectangle (6.4,3.0);
     % separator line
-    \draw[densely dotted, line width=1.2pt, black!50] (0,-0.5) -- (0,3.5);
+    \draw[dash pattern=on 4pt off 3pt, line width=0.8pt, black!35] (0,-2.8) -- (0,2.8);
 
     % bins for both worlds
     \DrawBinsAt{\xL}
     \DrawBinsAt{\xR}
 
-    % S_0 and S_1 labels above each world
-    \node[font=\small, anchor=south] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},2.9) {$S_0 = x_1,x_2,x_3,x_4,\ldots$};
-    \node[font=\small, anchor=south] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},2.9) {$S_1 = x_1,x_2,x_3,x_4,{\color{blue}x^{*}},\ldots$};
+    % S_0 and S_1 labels removed for cleaner look - the animation shows insertions step by step
+    % \node[font=\small, anchor=north] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},2.8) {$S_0 = x_1,x_2,x_3,x_4,\ldots$};
+    % \node[font=\small, anchor=north] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},2.8) {$S_1 = x_1,x_2,x_3,x_4,{\color{blue}x^{\star}},\ldots$};
 
     % world labels below bins
-    \node[font=\normalsize\bfseries] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},-0.55) {World 0};
-    \node[font=\normalsize\bfseries] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},-0.55) {World 1};
+    \node[font=\normalsize\bfseries] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {World 0};
+    \node[font=\normalsize\bfseries] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {World 1};
 
     % bin-top coords for arrows
     \foreach \b in {1,2,3,4}{
@@ -178,7 +192,7 @@
     #1
     #2
   \end{tikzpicture}
-  \end{center}
+  }%
   \vspace{-2mm}
 }
 
@@ -191,33 +205,22 @@
 
 \begin{document}
 
-% \begin{frame}
-%   \title{Faster Data Structures via History Independence}  
+\begin{frame}
+  \title{History-Independent Load Balancing}  
   
-%   \author{William Kuszmaul}
-%   \institute{CMU}
-%   \date{}
-%   \maketitle
-% \end{frame}
-
-%\begin{frame}
-%
-%\vspace{1 cm}
-%
-%  \begin{tabular}{ccc}
-%Michael A. Bender &Alex Conway & Mart\'in Farach-Colton \\
-%\small Stony Brook & \small  VMware & \small  Rutgers  \\
-%\includegraphics[height = 2cm]{michael} & \includegraphics[height = 2cm]{alex} & \includegraphics[height = 2cm]{martin} \\
-%& & \\
-%
-%
-%Hanna Koml\'os & \color{blue} William Kuszmaul & Nicole Wein   \\
-%
-%\small  Rutgers &\small   MIT & \small  DIMACS  \\
-%
-%\includegraphics[height = 2cm]{hanna} & \includegraphics[height = 2cm]{bill} & \includegraphics[height = 2cm]{nicole}
-%  \end{tabular}
-%\end{frame}
+  \author{
+    Michael A.~Bender\inst{1} \and
+    Bill Kuszmaul\inst{2} \and
+    Elaine Shi\inst{2} \and
+    \textbf{Rose Silver\inst{2}}
+  }
+  \institute{
+    \inst{1} Stony Brook University \and
+    \inst{2} Carnegie Mellon University
+  }
+  \date{}
+  \maketitle
+\end{frame}
 
 
 \begin{frame}{History Independent Data Structures}
@@ -652,518 +655,761 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 % ============== Two-World Slides ==============
 
 % --- Frame 10 (PDF p10): initial two worlds, empty bins ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{ }{ }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
-\end{frame}
-
-% --- Frame 11 (PDF p11): x1 chooses among 4 bins (draw arrows to all) ---
-\begin{frame}
-\TopSeq
-\TwoWorldFigure{
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.1,2.7) {$x_1$};
-  \foreach \b in {1,2,3,4}{\draw[->,red,line width=1.1pt] (aL) -- (LT\b);}
-}{
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.1,2.7) {$x_1$};
-  \foreach \b in {1,2,3,4}{\draw[->,red,line width=1.1pt] (aR) -- (RT\b);}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
 \end{frame}
 
 % --- Frame 12 (PDF p12): x1 chooses among 2 bins ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.1,2.7) {$x_1$};
-  \foreach \b in {1,3}{\draw[->,red,line width=1.1pt] (aL) -- (LT\b);}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.825,1.5) {$x_1$};
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
 }{
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.1,2.7) {$x_1$};
-  \foreach \b in {1,3}{\draw[->,red,line width=1.1pt] (aR) -- (RT\b);}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (2.575,1.5) {$x_1$};
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
+}
 \end{frame}
 
 % --- Frame 13 (PDF p13): x1 placed in bin 1 (both worlds) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{RedBallStyle}{$x_1$}
+  \BallInBin{\xL}{1}{1}{RedBallStyle}{$x_1$}
 }{
-  \BallInBin{1.2}{1}{1}{RedBallStyle}{$x_1$}
+  \BallInBin{\xR}{1}{1}{RedBallStyle}{$x_1$}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
-\end{frame}
-
-% --- Frame 14 (PDF p14): label forgotten (unlabeled ball in bin 1) ---
-\begin{frame}
-\TopSeq
-\TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-}{
-  \BallInBin{1.2}{1}{1}{}{}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
 \end{frame}
 
 % --- Frame 15 (PDF p15): x2 chooses among 2 bins (1 and 2) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.1,2.7) {$x_2$};
-  \foreach \b in {1,2}{\draw[->,red,line width=1.1pt] (aL) -- (LT\b);}
+  \BallInBin{\xL}{1}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-4.45,1.5) {$x_2$};
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.1,2.7) {$x_2$};
-  \foreach \b in {1,2}{\draw[->,red,line width=1.1pt] (aR) -- (RT\b);}
+  \BallInBin{\xR}{1}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (1.95,1.5) {$x_2$};
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
+}
 \end{frame}
 
 % --- Frame 16 (PDF p16): x2 placed in bin 2 (both worlds), plus prior ball in bin1 ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{RedBallStyle}{$x_2$}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{RedBallStyle}{$x_2$}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{RedBallStyle}{$x_2$}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{RedBallStyle}{$x_2$}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
-\end{frame}
-
-% --- Frame 17 (PDF p17): forget label, two unlabeled balls in bins 1 and 2 ---
-\begin{frame}
-\TopSeq
-\TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-}{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
 \end{frame}
 
 % --- Frame 18 (PDF p18): x3 chooses among 2 bins (1 and 2) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.1,2.7) {$x_3$};
-  \foreach \b in {1,2}{\draw[->,red,line width=1.1pt] (aL) -- (LT\b);}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-4.45,1.5) {$x_3$};
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.1,2.7) {$x_3$};
-  \foreach \b in {1,2}{\draw[->,red,line width=1.1pt] (aR) -- (RT\b);}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (1.95,1.5) {$x_3$};
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
+}
 \end{frame}
 
-% --- Frame 19 (PDF p19): x3 placed (world0 only), world1 blank in original ---
-\begin{frame}
+% --- Frame 19 (PDF p19): x3 placed in both worlds ---
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{RedBallStyle}{$x_3$}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{RedBallStyle}{$x_3$}
 }{
-  % world1 intentionally empty to match original slide
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{RedBallStyle}{$x_3$}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
+}
 \end{frame}
 
-% --- Frame 20 (PDF p20): forget label; world0 has bin1:1, bin2:2; world1 empty ---
-\begin{frame}
+% --- Frame 21 (PDF p21): x4 chooses among 2 bins (2 and 4) in both worlds ---
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-2.575,1.5) {$x_4$};
+  \foreach \b in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
 }{
-  % world1 intentionally empty to match original slide
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.825,1.5) {$x_4$};
+  \foreach \b in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
+}
 \end{frame}
 
-% --- Frame 21 (PDF p21): x4 chooses among 2 bins (2 and 4), world1 empty ---
-\begin{frame}
+% --- Frame 22 (PDF p22): x4 placed in bin4 in both worlds ---
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.1,2.7) {$x_4$};
-  \foreach \b in {2,4}{\draw[->,red,line width=1.1pt] (aL) -- (LT\b);}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{4}{1}{RedBallStyle}{$x_4$}
 }{
-  % world1 intentionally empty
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{4}{1}{RedBallStyle}{$x_4$}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
-\end{frame}
-
-% --- Frame 22 (PDF p22): x4 placed in bin4 (world0), world1 empty ---
-\begin{frame}
-\TopSeq
-\TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{RedBallStyle}{$x_4$}
-}{
-  % world1 empty
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item Two identical worlds, same insertion sequence
+\item World 1 will later receive one extra ball $x^{\star}$
+\end{itemize}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
-\end{frame}
-
-% --- Frame 23 (PDF p23): forget label; world0 bins [1,2,0,1], world1 empty ---
-\begin{frame}
-\TopSeq
-\TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
-}{
-  % world1 empty
-}
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
 \end{frame}
 
 % --- Frame 24 (PDF p24): x* (blue outline) chooses between bins (3 and 4) in world1 ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,BlueOutlineStyle] (bR) at (3.1,2.7) {$x^{*}$};
-  \foreach \bb in {3,4}{\draw[->,blue,line width=1.1pt] (bR) -- (RT\bb);}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,BlueOutlineStyle] (bR) at (3.825,1.5) {$x^{\star}$};
+  \foreach \bb in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},blue!70!black,line width=0.7pt] (bR) -- (RT\bb);}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item $x^{\star}$ arrives only in World 1
+\end{itemize}
+}
 \end{frame}
 
 % --- Frame 25 (PDF p25): x* placed (blue outline, labeled) in world1 bin4 top ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueOutlineStyle}{$x^{*}$}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueOutlineStyle}{$x^{\star}$}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
+\vfill
+\hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
+\begin{itemize}
+\item $x^{\star}$ arrives only in World 1
+\end{itemize}
+}
 \end{frame}
 
-% --- Frame 26 (PDF p26): forget label; x* becomes filled blue in world1 bin4 ---
-\begin{frame}
+% --- Frame 26: Question about divergence ---
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{} % filled blue
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vspace{1mm}
-{\small \textbf{World 0:} Insert balls from $S_0$ \hspace{1cm} \textbf{World 1:} Insert balls from $S_1 = S_0 \cup \{x^{*}\}$}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+\textbf{Question:} How do subsequent insertions differ between the two worlds?
+}
 \end{frame}
 
 % --- Frame 27 (PDF p27): future insertions: option 1 (No recourse) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either: \pause
+\begin{enumerate}
+\item No recourse
+\end{enumerate}
+}
 \end{frame}
 
 % --- Frame 28 (PDF p28): x5 chooses among 2 bins (1 and 3) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.1,2.7) {$x_5$};
-  \foreach \b in {1,3}{\draw[->,red,line width=1.1pt] (aL) -- (LT\b);}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.825,1.5) {$x_5$};
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.1,2.7) {$x_5$};
-  \foreach \b in {1,3}{\draw[->,red,line width=1.1pt] (aR) -- (RT\b);}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (2.575,1.5) {$x_5$};
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\end{enumerate}
+}
 \end{frame}
 
 % --- Frame 29 (PDF p29): x5 placed in bin3 (both worlds) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{RedBallStyle}{$x_5$}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{RedBallStyle}{$x_5$}
+  \BallInBin{\xL}{4}{1}{}{}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{RedBallStyle}{$x_5$}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{RedBallStyle}{$x_5$}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
-\end{frame}
-
-% --- Frame 30 (PDF p30): forget label; same occupancy ---
-\begin{frame}
-\TopSeq
-\TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
-}{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\end{enumerate}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
 \end{frame}
 
 % --- Frame 31 (PDF p31): x6 chooses among 2 bins (1 and 3) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.1,2.7) {$x_6$};
-  \foreach \b in {1,3}{\draw[->,red,line width=1.1pt] (aL) -- (LT\b);}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.825,1.5) {$x_6$};
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.1,2.7) {$x_6$};
-  \foreach \b in {1,3}{\draw[->,red,line width=1.1pt] (aR) -- (RT\b);}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (2.575,1.5) {$x_6$};
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\end{enumerate}
+}
 \end{frame}
 
 % --- Frame 32 (PDF p32): x6 placed in bin3 (level 2) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{}{}
-  \BallInBin{-5.0}{3}{2}{RedBallStyle}{$x_6$}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{RedBallStyle}{$x_6$}
+  \BallInBin{\xL}{4}{1}{}{}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{}{}
-  \BallInBin{1.2}{3}{2}{RedBallStyle}{$x_6$}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{RedBallStyle}{$x_6$}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
-\end{frame}
-
-% --- Frame 33 (PDF p33): forget label; bin3 now has 2 balls ---
-\begin{frame}
-\TopSeq
-\TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{}{}
-  \BallInBin{-5.0}{3}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
-}{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{}{}
-  \BallInBin{1.2}{3}{2}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\end{enumerate}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
 \end{frame}
 
 % --- Frame 34 (PDF p34): x7 chooses among 2 bins (2 and 3) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{}{}
-  \BallInBin{-5.0}{3}{2}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.1,2.7) {$x_7$};
-  \foreach \b in {2,3}{\draw[->,red,line width=1.1pt] (aL) -- (LT\b);}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.2,1.5) {$x_7$};
+  \foreach \b in {2,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{}{}
-  \BallInBin{1.2}{3}{2}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.1,2.7) {$x_7$};
-  \foreach \b in {2,3}{\draw[->,red,line width=1.1pt] (aR) -- (RT\b);}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.2,1.5) {$x_7$};
+  \foreach \b in {2,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\end{enumerate}
+}
 \end{frame}
 
 % --- Frame 35 (PDF p35): x7 placed in bin3 (level 3) ---
-\begin{frame}
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{}{}
-  \BallInBin{-5.0}{3}{2}{}{}
-  \BallInBin{-5.0}{3}{3}{RedBallStyle}{$x_7$}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{RedBallStyle}{$x_7$}
+  \BallInBin{\xL}{4}{1}{}{}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{}{}
-  \BallInBin{1.2}{3}{2}{}{}
-  \BallInBin{1.2}{3}{3}{RedBallStyle}{$x_7$}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{RedBallStyle}{$x_7$}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\end{enumerate}
+}
 \end{frame}
 
-% --- Frame 36 (PDF p36): label forgotten; bin3 has 4 balls (matches picture) ---
-\begin{frame}
+% --- Frame 36: x7 greyed, add option 2 (Recourse) ---
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{}{}
-  \BallInBin{-5.0}{3}{2}{}{}
-  \BallInBin{-5.0}{3}{3}{}{}
-  \BallInBin{-5.0}{3}{4}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{}{}
-  \BallInBin{1.2}{3}{2}{}{}
-  \BallInBin{1.2}{3}{3}{}{}
-  \BallInBin{1.2}{3}{4}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\item Recourse
+\end{enumerate}
+}
 \end{frame}
 
-% --- Frame 37 (PDF p37): add option 2 (Recourse) ---
-\begin{frame}
+% --- Frame 37: x8 chooses between bins 1 and 4 ---
+\begin{frame}{Analyzing the Recourse}
 \TopSeq
 \TwoWorldFigure{
-  \BallInBin{-5.0}{1}{1}{}{}
-  \BallInBin{-5.0}{2}{1}{}{}
-  \BallInBin{-5.0}{2}{2}{}{}
-  \BallInBin{-5.0}{3}{1}{}{}
-  \BallInBin{-5.0}{3}{2}{}{}
-  \BallInBin{-5.0}{3}{3}{}{}
-  \BallInBin{-5.0}{3}{4}{}{}
-  \BallInBin{-5.0}{4}{1}{}{}
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.2,1.5) {$x_8$};
+  \foreach \b in {1,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
 }{
-  \BallInBin{1.2}{1}{1}{}{}
-  \BallInBin{1.2}{2}{1}{}{}
-  \BallInBin{1.2}{2}{2}{}{}
-  \BallInBin{1.2}{3}{1}{}{}
-  \BallInBin{1.2}{3}{2}{}{}
-  \BallInBin{1.2}{3}{3}{}{}
-  \BallInBin{1.2}{3}{4}{}{}
-  \BallInBin{1.2}{4}{1}{}{}
-  \BallInBin{1.2}{4}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.2,1.5) {$x_8$};
+  \foreach \b in {1,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
 }
-\vspace{1mm}
-{\small \textbf{Future insertions:} (1) No recourse \quad (2) Recourse}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\item Recourse
+\end{enumerate}
+}
+\end{frame}
+
+% --- Frame 38: x8 placed in bin 4 (world 0) and bin 1 (world 1) ---
+\begin{frame}{Analyzing the Recourse}
+\TopSeq
+\TwoWorldFigure{
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \BallInBin{\xL}{4}{2}{RedBallStyle}{$x_8$}
+}{
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{1}{2}{RedBallStyle}{$x_8$}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
+}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\item Recourse
+\end{enumerate}
+}
+\end{frame}
+
+% --- Frame 39: all grey, top ball in bin 1 world 1 is blue ---
+\begin{frame}{Analyzing the Recourse}
+\TopSeq
+\TwoWorldFigure{
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \BallInBin{\xL}{4}{2}{}{}
+}{
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{1}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{}{}
+}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\item Recourse
+\end{enumerate}
+}
+\end{frame}
+
+% --- Frame 40: x9 chooses between bins 1 and 2 ---
+\begin{frame}{Analyzing the Recourse}
+\TopSeq
+\TwoWorldFigure{
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \BallInBin{\xL}{4}{2}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-4.45,1.5) {$x_9$};
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+}{
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{1}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{}{}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (1.95,1.5) {$x_9$};
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\item Recourse
+\end{enumerate}
+}
+\end{frame}
+
+% --- Frame 41: x9 placed in bin 1 (world 0) and bin 2 (world 1) ---
+\begin{frame}{Analyzing the Recourse}
+\TopSeq
+\TwoWorldFigure{
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{1}{2}{RedBallStyle}{$x_9$}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \BallInBin{\xL}{4}{2}{}{}
+}{
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{1}{2}{BlueFillStyle}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{2}{3}{RedBallStyle}{$x_9$}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{}{}
+}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\item Recourse
+\end{enumerate}
+}
+\end{frame}
+
+% --- Frame 42: all grey, top ball in bin 2 world 1 is blue ---
+\begin{frame}{Analyzing the Recourse}
+\TopSeq
+\TwoWorldFigure{
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{1}{2}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \BallInBin{\xL}{4}{2}{}{}
+}{
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{1}{2}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{2}{3}{BlueFillStyle}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{}{}
+}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Future insertions will experience either:
+\begin{enumerate}
+\item No recourse
+\item Recourse
+\end{enumerate}
+}
+\end{frame}
+
+% --- Frame 43: Two key observations ---
+\begin{frame}{Analyzing the Recourse}
+\TopSeq
+\TwoWorldFigure{
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{1}{2}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \BallInBin{\xL}{4}{2}{}{}
+}{
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{1}{2}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{2}{3}{BlueFillStyle}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{}{}
+}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+Two key observations: \pause
+\begin{enumerate}
+\item There's always one special bin with an extra ball \pause
+\item Recourse requires the special bin as one of the two choices
+\end{enumerate}
+}
+\end{frame}
+
+% --- Frame 44: Probability calculation ---
+\begin{frame}{Analyzing the Recourse}
+\TopSeq
+\TwoWorldFigure{
+  \BallInBin{\xL}{1}{1}{}{}
+  \BallInBin{\xL}{1}{2}{}{}
+  \BallInBin{\xL}{2}{1}{}{}
+  \BallInBin{\xL}{2}{2}{}{}
+  \BallInBin{\xL}{3}{1}{}{}
+  \BallInBin{\xL}{3}{2}{}{}
+  \BallInBin{\xL}{3}{3}{}{}
+  \BallInBin{\xL}{4}{1}{}{}
+  \BallInBin{\xL}{4}{2}{}{}
+}{
+  \BallInBin{\xR}{1}{1}{}{}
+  \BallInBin{\xR}{1}{2}{}{}
+  \BallInBin{\xR}{2}{1}{}{}
+  \BallInBin{\xR}{2}{2}{}{}
+  \BallInBin{\xR}{2}{3}{BlueFillStyle}{}
+  \BallInBin{\xR}{3}{1}{}{}
+  \BallInBin{\xR}{3}{2}{}{}
+  \BallInBin{\xR}{3}{3}{}{}
+  \BallInBin{\xR}{4}{1}{}{}
+  \BallInBin{\xR}{4}{2}{}{}
+}
+\vfill
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+\[
+\Pr[\text{ball } x_i \text{ incurs recourse}] = O(1/n)
+\]
+\pause
+\[
+\implies \mathbb{E}[\text{total recourse}] = \sum_{i} \Pr[\text{ball } x_i \text{ incurs recourse}] = O(m/n)
+\]
+}
 \end{frame}
 
 \end{document}
