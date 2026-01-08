@@ -211,14 +211,75 @@
     {\LARGE \textbf{History-Independent Load Balancing}}
   \end{center}
   
-  \vspace{8mm}
+  \vspace{6mm}
   
   \begin{center}
-  \begin{tabular}{@{}c@{\hspace{4mm}}c@{\hspace{4mm}}c@{\hspace{4mm}}c@{}}
-    \includegraphics[height=2.2cm]{Michael.jpg} &
-    \includegraphics[height=2.2cm]{Bill.jpeg} &
-    \includegraphics[height=2.2cm]{Elaine.jpg} &
-    \includegraphics[height=2.2cm]{Rose.jpg} \\[2mm]
+  \begin{tikzpicture}[scale=0.85]
+    % Exact same dimensions as Two-Choice Load Balancing slide
+    \def\bw{0.9}
+    \def\bh{3.0}
+    \def\by{0}
+    \def\bgap{0.35}
+    \def\bs{0.48cm}
+    \def\bsp{0.55}
+    
+    % Draw 7 rectangular bins
+    \foreach \i in {0,...,6} {
+      \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+      \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+      \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+      \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+    }
+    
+    % Bin 0: 3 balls
+    \foreach \j in {1,2,3} {
+      \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    % Bin 1: 5 balls
+    \foreach \j in {1,2,3,4,5} {
+      \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    % Bin 2: 4 balls
+    \foreach \j in {1,2,3,4} {
+      \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    % Bin 3: 3 balls
+    \foreach \j in {1,2,3} {
+      \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    % Bin 4: 5 balls
+    \foreach \j in {1,2,3,4,5} {
+      \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    % Bin 5: 4 balls
+    \foreach \j in {1,2,3,4} {
+      \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    % Bin 6: 4 balls
+    \foreach \j in {1,2,3,4} {
+      \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+  \end{tikzpicture}
+  \end{center}
+  
+  \vspace{6mm}
+  
+  \begin{center}
+  \begin{tabular}{@{}c@{\hspace{8mm}}c@{\hspace{8mm}}c@{\hspace{8mm}}c@{}}
     {\footnotesize Michael A.\ Bender} &
     {\footnotesize Bill Kuszmaul} &
     {\footnotesize Elaine Shi} &
@@ -234,16 +295,21 @@
 
 \begin{frame}{History Independent Data Structures}
 
-\vspace{2 cm}
+\vfill
 
-\textbf{History Independence: }``If an adversary were to see the state of the data structure,
-they would learn only the current set of elements, and nothing else about the history of past operations.''\\
+\begin{center}
+\begin{minipage}{0.85\textwidth}
+\textbf{History Independence} {\small \color{blue}(Micciancio '97, Naor \& Teague '01)}
 
-\vspace{.2 cm}
+\vspace{0.4cm}
+\hspace{0.5cm}\begin{minipage}{0.9\textwidth}
+\textit{``If an adversary were to see the state of the data structure,
+they would learn only the current set of elements, and nothing else about the history of past operations.''}
+\end{minipage}
+\end{minipage}
+\end{center}
 
-\hfill {\tiny \color{blue} [Micciancio '97], [Naor, Teague '01]}\\
-
-\vspace{ 1cm} 
+\vfill
 
 \end{frame}
 
@@ -279,94 +345,285 @@ they would learn only the current set of elements, and nothing else about the hi
 
 
 
-\begin{frame}{History Independent is a Security Guarantee}
+\begin{frame}{History Independence is a Security Guarantee}
 
-\vspace{1 cm}
+\vspace{0.8cm}
 
-\textbf{History Independence: }``If an adversary were to see the state of the data structure,
-they would learn only the current set of elements, and nothing else about the history of past operations.''\\ 
+\textbf{History Independence} {\small \color{blue}(Micciancio '97, Naor \& Teague '01)}
 
-\vspace{.2 cm}
+\vspace{0.3cm}
+\hspace{0.5cm}\begin{minipage}{0.9\textwidth}
+\textit{``If an adversary were to see the state of the data structure,
+they would learn only the current set of elements, and nothing else about the history of past operations.''}
+\end{minipage}
 
-\hfill {\tiny \color{blue} [Micciancio '97], [Naor, Teague '01]}\\ \pause
+\pause
+\vspace{0.6cm}
 
-\vspace{0.4 cm} 
+\textbf{A History of Applications}
 
-\textbf{Lost of successes: } Hash tables, trees, memory allocation, PMAs, graph algorithms, B-trees, cache-oblivious data structures...
-{\tiny \color{blue} [Micciancio '97], [Naor, Teague '01], [Buchbinder, Petrank '03], [Molnar, Kohno, Sastry, Wagner '06], [Blelloch, Golovin '07], [Moran, Naor, Segev '07] [Naor, Segev, Wieder '08], [Golovin '08 '09 '10], [Tzouramanis '12], [Bajaj, Sion '13] [Bajaj, Chakrabati, Sion '15], [Roche, Aviv, Choi '15], [Bender, Berry, Johnson, Kroeger, McCauley, Phillips, Simon, Singh, Zage '16], ...} \pause
+\vspace{0.3cm}
+\hspace{0.5cm}\begin{minipage}{0.9\textwidth}
+Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious data structures, and more.\\[0.2cm]
+{\tiny \color{blue} Micciancio '97, Naor \& Teague '01, Buchbinder \& Petrank '03, Molnar et al.~'06, Blelloch \& Golovin '07, Moran et al.~'07, Naor et al.~'08, Golovin '08--'10, Bajaj \& Sion '13, Roche et al.~'15, Bender et al.~'16}
+\end{minipage}
 
-\vspace{.3 cm}
+\pause
+\vspace{0.6cm}
 
-\textbf{But... some very basic questions also remain open.}
+\textbf{Yet fundamental questions remain open.}
 
 \end{frame}
 
+% --- Old cup-style slide (commented out) ---
+% \begin{frame}{Two-Choice Load Balancing}
+% 
+% \begin{center}
+% \begin{tikzpicture}[scale=0.8]
+%   % Define bin dimensions
+%   \def\binwidth{0.6}
+%   \def\binheight{2.5}
+%   \def\ballradius{0.2}
+%   \def\binspacing{1.0}
+%   
+%   % Draw 7 bins as cups (bottom line + two small side lines)
+%   \def\sideheight{0.15}
+%   \foreach \i in {0,...,6} {
+%     \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
+%   }
+%   
+%   % Add balls to bins (varying amounts, average ~4)
+%   % Bin 0: 3 balls
+%   \foreach \j in {1,2,3} {
+%     \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+%   }
+%   % Bin 1: 5 balls
+%   \foreach \j in {1,2,3,4,5} {
+%     \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+%   }
+%   % Bin 2: 4 balls
+%   \foreach \j in {1,2,3,4} {
+%     \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+%   }
+%   % Bin 3: 3 balls
+%   \foreach \j in {1,2,3} {
+%     \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+%   }
+%   % Bin 4: 5 balls
+%   \foreach \j in {1,2,3,4,5} {
+%     \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+%   }
+%   % Bin 5: 4 balls
+%   \foreach \j in {1,2,3,4} {
+%     \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+%   }
+%   % Bin 6: 4 balls
+%   \foreach \j in {1,2,3,4} {
+%     \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+%   }
+%   
+%   % Ball x being inserted (same size as other balls, centered)
+%   \fill[black] (3*\binspacing + \binwidth/2, 3.5) circle (\ballradius);
+%   \node[above] at (3*\binspacing + \binwidth/2, 3.5 + \ballradius) {$x$};
+%   
+%   % Arrows to h_1(x) and h_2(x) - pointing to bin 1 and bin 3 (second and fourth)
+%   \draw[->, thick] (3*\binspacing + \binwidth/2 - 0.1, 3.5 - \ballradius) to[out=-150, in=90] (1*\binspacing + \binwidth/2, \binheight + 0.1);
+%   \node[left] at (1.5, 3.1) {$h_1(x)$};
+%   \draw[->, thick] (3*\binspacing + \binwidth/2 + 0.1, 3.5 - \ballradius) to[out=-50, in=90] (3*\binspacing + \binwidth/2, 3*0.45 + \ballradius);
+%   \node[right] at (3.6, 3.1) {$h_2(x)$};
+%   
+%   % Label: n bins
+%   \draw[<->] (0, -0.4) -- (6*\binspacing + \binwidth, -0.4);
+%   \node[below, blue] at (3*\binspacing + \binwidth/2, -0.4) {$n$ bins};
+%   
+% \end{tikzpicture}
+% \end{center}
+% 
+% 
+%   \begin{itemize}
+%   \item Balls are {\color{green!50!black}inserted}/{\color{red!70!black}deleted}, with up to {\color{blue}$m$} present at a time.
+%   \item Each ball has two random bins where it can go. 
+%   \item We must maintain a valid assignment of balls to bins.
+%   \end{itemize}
+% 
+% \end{frame}
+
+% --- New slide with Two-World style bins/balls ---
 \begin{frame}{Two-Choice Load Balancing}
 
+\vspace{0.2cm}
 \begin{center}
-\begin{tikzpicture}[scale=0.8]
-  % Define bin dimensions
-  \def\binwidth{0.6}
-  \def\binheight{2.5}
-  \def\ballradius{0.2}
-  \def\binspacing{1.0}
+\begin{tikzpicture}[scale=0.85]
+  % Dimensions matching Two-World style
+  \def\bw{0.9}       % bin width
+  \def\bh{3.0}       % bin height (top y) - taller to contain all balls
+  \def\by{0}         % bin bottom y
+  \def\bgap{0.35}    % gap between bins
+  \def\bs{0.48cm}    % ball size
+  \def\bsp{0.55}     % ball spacing
   
-  % Draw 7 bins as cups (bottom line + two small side lines)
-  \def\sideheight{0.15}
+  % Draw 7 rectangular bins
   \foreach \i in {0,...,6} {
-    \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
   }
   
-  % Add balls to bins (varying amounts, average ~4)
+  % Place balls in bins using foreach
   % Bin 0: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 1: 5 balls
   \foreach \j in {1,2,3,4,5} {
-    \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 2: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 3: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 4: 5 balls
   \foreach \j in {1,2,3,4,5} {
-    \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 5: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 6: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   
-  % Ball x being inserted (same size as other balls, centered)
-  \fill[black] (3*\binspacing + \binwidth/2, 3.5) circle (\ballradius);
-  \node[above] at (3*\binspacing + \binwidth/2, 3.5 + \ballradius) {$x$};
+  % Ball x being inserted (dark forest green, centered between its two choices)
+  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\xball}{(\binoneX+\binthreeX)/2}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xball,4.5) {\scriptsize $x$};
   
-  % Arrows to h_1(x) and h_2(x) - pointing to bin 1 and bin 3 (second and fourth)
-  \draw[->, thick] (3*\binspacing + \binwidth/2 - 0.1, 3.5 - \ballradius) to[out=-150, in=90] (1*\binspacing + \binwidth/2, \binheight + 0.1);
-  \node[left] at (1.5, 3.1) {$h_1(x)$};
-  \draw[->, thick] (3*\binspacing + \binwidth/2 + 0.1, 3.5 - \ballradius) to[out=-50, in=90] (3*\binspacing + \binwidth/2, 3*0.45 + \ballradius);
-  \node[right] at (3.6, 3.1) {$h_2(x)$};
+  % Straight arrows to two bins (bin 1 and bin 3) with labels
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, green!50!black] {\scriptsize $h_1(x)$};
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binthreeX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
   
   % Label: n bins
-  \draw[<->] (0, -0.4) -- (6*\binspacing + \binwidth, -0.4);
-  \node[below, blue] at (3*\binspacing + \binwidth/2, -0.4) {$n$ bins};
+  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
+  \draw[<->] (0, -0.4) -- (\totalw, -0.4);
+  \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
   
 \end{tikzpicture}
 \end{center}
 
+% \vspace{0.3cm}
+  \begin{itemize}
+  \item Balls are {\color{green!50!black}inserted}/{\color{red!70!black}deleted}, with up to {\color{blue}$m$} present at a time.
+  \item Each ball has two random bins where it can go. 
+  \item We must maintain a valid assignment of balls to bins.
+  \end{itemize}
+
+\end{frame}
+
+% --- OPTION A: Red dotted ball (no label) ---
+\begin{frame}{Two-Choice Load Balancing}
+
+\vspace{0.2cm}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  \def\bw{0.9}
+  \def\bh{3.0}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.48cm}
+  \def\bsp{0.55}
+  
+  % Draw 7 rectangular bins
+  \foreach \i in {0,...,6} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+  
+  % Bin 0: 2 balls + 1 being deleted (top)
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Deleted ball (dotted red, no label)
+  \pgfmathsetmacro{\delx}{0*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\dely}{\by+0.32+(3-1)*\bsp}
+  \node[circle, draw, dotted, minimum size=\bs, inner sep=0pt, line width=1.2pt, draw=red!70!black, fill=red!20] (delball) at (\delx,\dely) {};
+  % Curved arrow showing ball being thrown out (overlay so it doesn't shift the picture)
+  \draw[overlay, -{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=0.8pt] 
+    (delball.west) to[out=200, in=45] ++(-0.7,-0.5);
+  
+  % Remaining bins
+  \foreach \j in {1,2,3,4,5} {
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  \foreach \j in {1,2,3,4} {
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  \foreach \j in {1,2,3,4,5} {
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  \foreach \j in {1,2,3,4} {
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  \foreach \j in {1,2,3,4} {
+    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  
+  % Ball x being inserted (dark forest green)
+  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\xball}{(\binoneX+\binthreeX)/2}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xball,4.5) {\scriptsize $x$};
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, green!50!black] {\scriptsize $h_1(x)$};
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binthreeX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
+  
+  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
+  \draw[<->] (0, -0.4) -- (\totalw, -0.4);
+  \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
+\end{tikzpicture}
+\end{center}
 
   \begin{itemize}
-  \item Balls are {\color{blue}inserted/\color{blue}deleted}, with up to {\color{blue}$m$} present at a time.
+  \item Balls are {\color{green!50!black}inserted}/{\color{red!70!black}deleted}, with up to {\color{blue}$m$} present at a time.
   \item Each ball has two random bins where it can go. 
   \item We must maintain a valid assignment of balls to bins.
   \end{itemize}
@@ -376,56 +633,79 @@ they would learn only the current set of elements, and nothing else about the hi
 \begin{frame}{Two Goals}
 
 \begin{center}
-\begin{tikzpicture}[scale=0.7]
-  % Define bin dimensions
-  \def\binwidth{0.6}
-  \def\ballradius{0.2}
-  \def\binspacing{1.0}
-  \def\avgheight{2.35}  % height for m/n line (top of 5th ball, m/n = 5)
+\begin{tikzpicture}[scale=0.75]
+  % Dimensions matching Two-World style
+  \def\bw{0.9}       % bin width
+  \def\bh{4.2}       % bin height (shorter)
+  \def\by{0}         % bin bottom y
+  \def\bgap{0.35}    % gap between bins
+  \def\bs{0.48cm}    % ball size
+  \def\bsp{0.625}    % ball spacing (increased to prevent overlap)
+  \def\bstart{0.32}  % first ball center offset from bottom
   
-  % Draw 7 bins as cups
-  \def\sideheight{0.15}
+  % Draw 7 rectangular bins
   \foreach \i in {0,...,6} {
-    \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
   }
   
-  % Add balls to bins (total = 35, so m/n = 5 exactly)
-  % Bin 0: 3 balls
+  % Add balls to bins (reduced counts to fit shorter bins, m/n ~ 4)
+  % Bin 0: 2 balls
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+\bstart+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 1: 5 balls (above average)
+  \foreach \j in {1,2,3,4,5} {
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+\bstart+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 2: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+\bstart+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
-  % Bin 1: 6 balls (above average)
+  % Bin 3: 6 balls (the most overloaded bin!)
   \foreach \j in {1,2,3,4,5,6} {
-    \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+\bstart+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
-  % Bin 2: 4 balls
-  \foreach \j in {1,2,3,4} {
-    \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-  }
-  % Bin 3: 8 balls (the most overloaded bin!)
-  \foreach \j in {1,2,3,4,5,6,7,8} {
-    \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-  }
-  % Bin 4: 7 balls (above average)
-  \foreach \j in {1,2,3,4,5,6,7} {
-    \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+  % Bin 4: 5 balls (above average)
+  \foreach \j in {1,2,3,4,5} {
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+\bstart+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 5: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+\bstart+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 6: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+\bstart+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   
-  % Dotted line at m/n (average height = 5 balls)
-  \draw[dashed, thick, blue] (-0.3, \avgheight) -- (6*\binspacing + \binwidth + 0.3, \avgheight);
+  % m/n line: average is 4 balls, so line goes between ball 4 and ball 5
+  % Position: halfway between 4th ball center and 5th ball center
+  \pgfmathsetmacro{\avgheight}{\by+\bstart+(4-1)*\bsp + 0.5*\bsp}
+  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
+  \draw[dashed, thick, blue] (-0.3, \avgheight) -- ({\totalw + 0.3}, \avgheight);
   \node[left, blue] at (-0.4, \avgheight) {$m/n$};
   
-  % Overload bracket on the right side
-  \draw[<->, thick, red] (6*\binspacing + \binwidth + 0.5, \avgheight) -- (6*\binspacing + \binwidth + 0.5, 8*0.45 - 0.1 + \ballradius);
-  \node[right, red] at (6*\binspacing + \binwidth + 0.6, 2.9) {overload};
+  % Overload bracket on the right side (exactly 2 ball heights)
+  \pgfmathsetmacro{\overloadtop}{\avgheight + 2*\bsp}
+  \draw[{Stealth[length=2.5mm, width=1.8mm]}-{Stealth[length=2.5mm, width=1.8mm]}, blue, line width=0.7pt] ({\totalw + 0.5}, \avgheight) -- ({\totalw + 0.5}, \overloadtop);
+  \node[right, blue] at ({\totalw + 0.6}, {(\avgheight + \overloadtop)/2}) {overload};
   
 \end{tikzpicture}
 \end{center}
@@ -1615,14 +1895,102 @@ Two key observations: \pause
     {\LARGE \textbf{History-Independent Load Balancing}}
   \end{center}
   
-  \vspace{8mm}
+  \vspace{6mm}
   
   \begin{center}
-  \begin{tabular}{@{}c@{\hspace{4mm}}c@{\hspace{4mm}}c@{\hspace{4mm}}c@{}}
-    \includegraphics[height=2.2cm]{Michael.jpg} &
-    \includegraphics[height=2.2cm]{Bill.jpeg} &
-    \includegraphics[height=2.2cm]{Elaine.jpg} &
-    \includegraphics[height=2.2cm]{Rose.jpg} \\[2mm]
+  \begin{tikzpicture}[scale=0.85]
+    % Exact same dimensions as Two-Choice Load Balancing slide
+    \def\bw{0.9}
+    \def\bh{3.0}
+    \def\by{0}
+    \def\bgap{0.35}
+    \def\bs{0.48cm}
+    \def\bsp{0.55}
+    
+    % Draw 7 rectangular bins
+    \foreach \i in {0,...,6} {
+      \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+      \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+      \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+      \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+    }
+    
+    % Bin 0: 3 balls (top ball = T)
+    \foreach \j in {1,2} {
+      \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(3-1)*\bsp}
+    \node[circle, draw=blue!60!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=blue!15, text=blue!70!black] at (\bx,\byy) {\scriptsize\textbf{T}};
+    
+    % Bin 1: 5 balls (top ball = H)
+    \foreach \j in {1,2,3,4} {
+      \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(5-1)*\bsp}
+    \node[circle, draw=blue!60!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=blue!15, text=blue!70!black] at (\bx,\byy) {\scriptsize\textbf{H}};
+    
+    % Bin 2: 4 balls (top ball = A)
+    \foreach \j in {1,2,3} {
+      \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+    \node[circle, draw=blue!60!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=blue!15, text=blue!70!black] at (\bx,\byy) {\scriptsize\textbf{A}};
+    
+    % Bin 3: 3 balls (top ball = N)
+    \foreach \j in {1,2} {
+      \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(3-1)*\bsp}
+    \node[circle, draw=blue!60!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=blue!15, text=blue!70!black] at (\bx,\byy) {\scriptsize\textbf{N}};
+    
+    % Bin 4: 5 balls (top ball = K)
+    \foreach \j in {1,2,3,4} {
+      \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(5-1)*\bsp}
+    \node[circle, draw=blue!60!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=blue!15, text=blue!70!black] at (\bx,\byy) {\scriptsize\textbf{K}};
+    
+    % Bin 5: 4 balls (top ball = S)
+    \foreach \j in {1,2,3} {
+      \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+    \node[circle, draw=blue!60!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=blue!15, text=blue!70!black] at (\bx,\byy) {\scriptsize\textbf{S}};
+    
+    % Bin 6: 4 balls (top ball = !)
+    \foreach \j in {1,2,3} {
+      \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+    \node[circle, draw=blue!60!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=blue!15, text=blue!70!black] at (\bx,\byy) {\scriptsize\textbf{!}};
+  \end{tikzpicture}
+  \end{center}
+  
+  \vspace{6mm}
+  
+  \begin{center}
+  \begin{tabular}{@{}c@{\hspace{8mm}}c@{\hspace{8mm}}c@{\hspace{8mm}}c@{}}
     {\footnotesize Michael A.\ Bender} &
     {\footnotesize Bill Kuszmaul} &
     {\footnotesize Elaine Shi} &
