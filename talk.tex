@@ -11,6 +11,7 @@
 %%\usepackage{tikz}
 
 \usepackage{array}
+\usepackage{booktabs}
 
 \usepackage{amssymb}% http://ctan.org/pkg/amssymb
 \usepackage{pifont}% http://ctan.org/pkg/pifont
@@ -18,6 +19,7 @@
 \newcommand{\xmark}{{\color{red}\selectfont \ding{55}} \vspace{.18 cm}}%
 
 \usepackage[makeroom]{cancel}
+\usepackage[normalem]{ulem}
 \usepackage{verbatim}
 \usetikzlibrary{arrows,shapes,arrows.meta,calc}
 
@@ -855,48 +857,57 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
   \end{itemize}
 \end{frame}
 
-\begin{frame}{What About Non-History-Independent Solutions?} \pause
+\begin{frame}{Past Work (Not History Independent)} 
 
-Lots of work on the insertion-only case. 
-\\
-{\color{gray} [Azar, Broder, Karlin and Upfal '94]
-[Berenbrink, Czumaj, Steger, and V{\"o}cking '00][Dietzfelbinger and Weidling '07] 
-[Frieze and Petti '18] $\ldots$} \pause 
+% \textbf{Past work on insertion-only case: }
+% {\color{gray} [Azar, Broder, Karlin and Upfal '94]
+% [Berenbrink, Czumaj, Steger, and V{\"o}cking '00][Dietzfelbinger and Weidling '07] 
+% [Frieze and Petti '18] $\ldots$} \pause 
 
-\vspace{.2 cm}
+\vspace{2mm}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+\textbf{Overload} & \textbf{Recourse} & \textbf{Reference} & \textbf{Caveats} \\
+\midrule
+$O(\log \log n)$ & $0$ & {\scriptsize [ABKU '94] [BCSV '00]} & {\scriptsize insertion-only} \\
+$O(1)$ & $O(\log (m/n))$ & {\scriptsize [Dietzfelbinger, Weidling '07]} & {\scriptsize insertion-only} \\
+$\tilde{O}(\sqrt{m/n})$ & $O(1)$ & {\scriptsize [Frieze, Petti '18]} & {\scriptsize insertion-only} \\
+$O(\log (m/n))$ & $0$ & {\scriptsize [Bansal, Kuszmaul '22]} & {\scriptsize no reinsertions} \\
+$O(1)$ & $O(m/n)$ & {\scriptsize [Dietzfelbinger, Weidling '07]} &  \\
+\bottomrule \pause
+\color{blue} $O(1)$ & \color{blue} $O(\log \log (m/n))$ & \color{blue} {\scriptsize [This Paper]} & \\ 
+\bottomrule
+\end{tabular}
+\end{center}
 
-But the fully dynamic case has remained largely open. \\
-{\color{gray} [V{\"o}cking '99] [Dietzfelbinger and Weidling '07] [Bender, Conway, Farach-Colton, Kuszmaul, Tagliavini '21] [Bansal, Kuszmaul '22] $\ldots$} \pause
+\pause
 
-\vspace{.2 cm}
+% But the fully dynamic case has remained largely open.
 
-\textbf{Open Question: }\\
-Is there a {\color{blue}fully dynamic} solution with {\color{blue}recourse $o(m/n)$} and {\color{blue}overload $O(\log \log n)$}? \pause
+% {\color{gray} [V{\"o}cking '99] [Dietzfelbinger and Weidling '07] [Bender, Conway, Farach-Colton, Kuszmaul, Tagliavini '21] [Bansal, Kuszmaul '22] $\ldots$} \pause
 
-\vspace{.2 cm}
+ \vspace{.2 cm}
 
-\textbf{Answer: }\\ 
-Yes! We get {\color{blue}recourse $O(\log \log (m/n))$} and {\color{blue}overload $O(1)$}.
+ \color{blue}
+
+If we want overload $O(1)$, our result is a new state of the art!
 
 \end{frame}
 
-\begin{frame}{This Paper}
+\begin{frame}{Rest of Talk: A Simple Warmup}
 
-  \vspace{1 cm}
 
-  \textbf{Question: }Does there exist a {\color{blue}history-independent} solution with small {\color{blue}recourse} and {\color{blue}overload}? 
+  \vspace{2 cm}
 
-  \vspace{1 cm}
-
-  \textbf{Theorem: }There exists a {\color{blue}history-independent} solution with:
+  \textbf{Theorem: }There exists a {history-independent} solution with:
   \begin{itemize}
-  \item {\color{blue}Overload $O(1)$}, with high probability.
-  \item Expected {\color{blue}recourse $O(\log \log (m/n))$}.
-  \end{itemize} \pause
+  \item High-probability overload \sout{$O(1)$} $O(\log \log n)$.
+  \item Expected recourse \sout{$O(\log \log (m/n))$} $O(m/n)$.
+  \end{itemize} 
 
   \vspace{1 cm}
-
-  \textbf{Rest of Talk: }A simple history-independent algorithm with {\color{blue}overload $O(\log \log n)$} and \color{blue} expected recourse $O(m/n)$.
 \end{frame}
 
 % \begin{frame}{}
@@ -2060,23 +2071,19 @@ Two key observations: \pause
 }
 \end{frame}
 
-\begin{frame}{This Paper}
 
-  \vspace{1 cm}
+\begin{frame}{A Simple Warmup}
 
-  \textbf{Question: }Does there exist a {\color{blue}history-independent} solution with small {\color{blue}recourse} and {\color{blue}overload}? 
 
-  \vspace{1 cm}
+  \vspace{2 cm}
 
-  \textbf{Theorem: }There exists a {\color{blue}history-independent} solution with:
+  \textbf{Theorem: }There exists a {history-independent} solution with:
   \begin{itemize}
-  \item {\color{blue}Overload $O(1)$}, with high probability.
-  \item Expected {\color{blue}recourse $O(\log \log (m/n))$}.
+  \item High-probability overload \sout{$O(1)$} $O(\log \log n)$.
+  \item Expected recourse \sout{$O(\log \log (m/n))$} $O(m/n)$.
   \end{itemize} 
 
   \vspace{1 cm}
-
-  \textbf{Rest of Talk: }A simple history-independent algorithm with {\color{blue}overload $O(\log \log n)$} and \color{blue} expected recourse $O(m/n)$. \hspace{0.3em}{\color{blue}\ding{51}}
 \end{frame}
 
 \begin{frame}[plain]
