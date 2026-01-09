@@ -1227,8 +1227,8 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 \begin{center}
 \begin{minipage}[b]{0.45\textwidth}
 \centering
-% Left picture: bins with balls (current state) - Frames 1-6
-\only<1-6>{\begin{tikzpicture}[scale=0.55]
+% Left picture: Current state A_S (always visible)
+\begin{tikzpicture}[scale=0.55]
   \def\bw{0.9}
   \def\bh{3.2}
   \def\by{0}
@@ -1236,7 +1236,7 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
   \def\bs{0.42cm}
   \def\bsp{0.76}
   
-  % Fixed bounding box to match all frames
+  % Fixed bounding box
   \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
   \path[use as bounding box] (-0.5, -0.7) rectangle ({\totalw+0.5}, 4.5);
   
@@ -1287,63 +1287,14 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
   \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
   \node[below] at ({0.5*\totalw}, -0.3) {\small Current state $A_S$};
   
-\end{tikzpicture}}%
-% Left picture: Updated to match Computing A_S - Frame 7+
-\only<7->{\begin{tikzpicture}[scale=0.55]
-  \def\bw{0.9}
-  \def\bh{3.2}
-  \def\by{0}
-  \def\bgap{0.4}
-  \def\bs{0.42cm}
-  \def\bsp{0.76}
-  
-  % Fixed bounding box to match all frames
-  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
-  \path[use as bounding box] (-0.5, -0.7) rectangle ({\totalw+0.5}, 4.5);
-  
-  % Draw 4 rectangular bins
-  \foreach \i in {0,...,3} {
-    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
-    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
-    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
-    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
-  }
-  
-  % Bin 0: 2 balls (grey)
-  \foreach \j in {1,2} {
-    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 1: 3 balls (grey)
-  \foreach \j in {1,2,3} {
-    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 2: 3 balls (grey)
-  \foreach \j in {1,2,3} {
-    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 3: 1 grey + 1 green on top (2 total)
-  \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\byy}{\by+0.35}
-  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  \pgfmathsetmacro{\byy}{\by+0.35+\bsp}
-  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20] at (\bx,\byy) {};
-  
-  % Label below
-  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
-  \node[below] at ({0.5*\totalw}, -0.3) {\small Updated state $A_{S \cup \{x\}}$};
-  
-\end{tikzpicture}}%
+\end{tikzpicture}%
 \end{minipage}%
+\hfill%
+\raisebox{0.8cm}{\Large $\longrightarrow$}%
 \hfill%
 \begin{minipage}[b]{0.45\textwidth}
 \centering
-% Right picture: Computing A_S with animation - bounding box always present
+% Right picture: Computing A_{S∪x} with animation
 \begin{tikzpicture}[scale=0.55]
   \def\bw{0.9}
   \def\bh{3.2}
@@ -1352,22 +1303,20 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
   \def\bs{0.42cm}
   \def\bsp{0.76}
   
-  % Fixed bounding box - always present to prevent shifting
+  % Fixed bounding box
   \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
   \path[use as bounding box] (-0.5, -0.7) rectangle ({\totalw+0.5}, 4.5);
   
-  % Draw 4 rectangular bins (visible from step 4)
-  \only<4->{
-    \foreach \i in {0,...,3} {
-      \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
-      \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
-      \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
-      \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
-    }
+  % Draw 4 rectangular bins (always visible)
+  \foreach \i in {0,...,3} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
   }
   
-  % Step 5: Row of 10 balls above bins (9 grey + 1 green as 5th ball)
-  \only<5>{
+  % Frame 3: Row of 10 balls above bins (9 grey + 1 green as 5th ball)
+  \only<3>{
     \foreach \i in {0,...,9} {
       \pgfmathsetmacro{\ballx}{\i*0.76 - 1.0}
       \ifnum\i=4
@@ -1378,8 +1327,8 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
     }
   }
   
-  % Step 6: Balls in bins (greedy assignment) - 10 balls total, loads 2,3,3,2 with green in bin 3
-  \only<6->{
+  % Frame 4+: Balls in bins (greedy assignment) - 10 balls total, loads 2,3,3,2 with green in bin 3
+  \only<4->{
     % Bin 0: 2 balls (grey)
     \foreach \j in {1,2} {
       \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
@@ -1406,11 +1355,9 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20] at (\bx,\byy) {};
   }
   
-  % Label below (visible from step 4)
-  \only<4->{
-    \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
-    \node[below] at ({0.5*\totalw}, -0.3) {\small Computing $A_{S \cup \{x\}}$};
-  }
+  % Label below
+  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
+  \node[below] at ({0.5*\totalw}, -0.3) {\small Computing $A_{S \cup \{x\}}$};
   
 \end{tikzpicture}%
 \end{minipage}
@@ -1419,44 +1366,101 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 \vfill
 \vspace{0.5cm}
 
-% Text area - fixed height box to prevent shifting
-\hspace*{-0.5cm}
-\begin{minipage}[t][2.2cm][t]{0.45\textwidth}
+% Text area with the greedy simulation steps (appears on frame 2+)
 \only<2->{%
-At each time step:
+To insert a new ball $x$, we compute $A_{S \cup \{x\}}$:
 \begin{enumerate}\setlength{\itemsep}{0pt}
-\item Observe current set $S$
-\item \tikz[remember picture, baseline=(step2.base)]{\node[inner sep=0pt](step2){Compute $A_{S \cup \{x\}}$};}
-\item Update the system to reflect $A_{S \cup \{x\}}$
+\item Empty out the bins.
+\item Sort the balls in $S \cup \{x\}$ to get $x_1, x_2, \ldots$
+\item Insert the balls in sorted order using greedy.
 \end{enumerate}
 }%
-\end{minipage}
-% Step 3: Box appears (overlay so it doesn't affect layout)
-\only<3->{%
-\begin{tikzpicture}[remember picture, overlay]
-  \node[draw, rounded corners, fill=blue!5, text width=6.5cm, align=left, anchor=west] (box) at ([xshift=1.8cm, yshift=-0.2cm]step2.east) {
-    \textbf{Compute $A_{S \cup \{x\}}$ by simulating greedy:}\\[2pt]
-    \hspace{0.3cm}2a. Start with empty bins\\
-    \hspace{0.3cm}2b. Sort balls in $S$ to get $x_1, x_2, \ldots$\\
-    \hspace{0.3cm}2c. Insert balls using greedy
-  };
-  \draw[-{Stealth[length=2mm, width=1.5mm]}, blue!60!black, line width=0.8pt] (box.west) -- (step2.east);
-\end{tikzpicture}
-}
 
 \end{frame}
 
 \begin{frame}{Analyzing History-Independent Greedy}
 
 \begin{center}
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+% Left picture: Current state A_S
 \begin{tikzpicture}[scale=0.55]
-  % Updated state A_{S∪x} - 4 bins, loads 2,3,3,2 with green on top of bin 3
   \def\bw{0.9}
   \def\bh{3.2}
   \def\by{0}
   \def\bgap{0.4}
   \def\bs{0.42cm}
   \def\bsp{0.76}
+  
+  % Fixed bounding box
+  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
+  \path[use as bounding box] (-0.5, -0.7) rectangle ({\totalw+0.5}, 4.5);
+  
+  % Draw 4 rectangular bins
+  \foreach \i in {0,...,3} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+  
+  % Bin 0: 2 balls
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 1: 2 balls
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 2: 3 balls
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 3: 2 balls
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  
+  % Ball x being inserted (green, between bins 1 and 3)
+  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\xcenter}{(\binoneX+\binthreeX)/2}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xcenter,4.2) {\scriptsize $x$};
+  
+  % Arrows to two choices (bins 1 and 3)
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=0.7pt] (xball) -- (\binoneX,\bh);
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=0.7pt] (xball) -- (\binthreeX,\bh);
+  
+  % Label below
+  \node[below] at ({0.5*\totalw}, -0.3) {\small Current state $A_S$};
+  
+\end{tikzpicture}%
+\end{minipage}%
+\hfill%
+\raisebox{0.8cm}{\Large $\longrightarrow$}%
+\hfill%
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+% Right picture: Computing A_{S∪x} with balls in bins
+\begin{tikzpicture}[scale=0.55]
+  \def\bw{0.9}
+  \def\bh{3.2}
+  \def\by{0}
+  \def\bgap{0.4}
+  \def\bs{0.42cm}
+  \def\bsp{0.76}
+  
+  % Fixed bounding box
+  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
+  \path[use as bounding box] (-0.5, -0.7) rectangle ({\totalw+0.5}, 4.5);
   
   % Draw 4 rectangular bins
   \foreach \i in {0,...,3} {
@@ -1492,10 +1496,10 @@ At each time step:
   \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20] at (\bx,\byy) {};
   
   % Label below
-  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
-  \node[below] at ({0.5*\totalw}, -0.3) {\small Updated state $A_{S \cup \{x\}}$};
+  \node[below] at ({0.5*\totalw}, -0.3) {\small Computing $A_{S \cup \{x\}}$};
   
-\end{tikzpicture}
+\end{tikzpicture}%
+\end{minipage}
 \end{center}
 
     \pause
