@@ -842,19 +842,31 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
 
 \end{frame}
 
-\begin{frame}{This Paper}
+\begin{frame}{Putting it All Together}\pause
 
-  \vspace{1 cm}
-
-  \textbf{Question: }Does there exist a {\color{blue}history-independent} solution with small {\color{blue}recourse} and {\color{blue}overload}? \pause
-
-  \vspace{1 cm}
-
-  \textbf{Theorem: }There exists a {\color{blue}history-independent} solution with:
+  \vspace{0.5cm}
+  
+  \begin{minipage}{0.95\textwidth}
+  \textbf{History-Independent Load Balancing:}\pause 
   \begin{itemize}
-  \item {\color{blue}Overload $O(1)$}, with high probability.
-  \item Expected {\color{blue}recourse $O(\log \log (m/n))$}.
+  \item For all sets $S$ of balls, if the current set is $S$, then the assignment is always $A_S$.
   \end{itemize}
+  \end{minipage}
+
+  \pause
+  \vspace{0.6cm}
+
+  \textbf{Question:} Does there exist a {\color{blue}history-independent} solution with small {\color{blue}recourse} and small {\color{blue}overload}?
+  
+  \pause
+  \vspace{0.8cm}
+  
+  \textbf{Our Main Result:} There exists a {\color{blue}history-independent} solution with:
+  \begin{itemize}
+  \item High probability {\color{blue}overload $O(1)$}
+  \item Expected {\color{blue} recourse $O(\log \log (m/n))$}
+  \end{itemize}
+  
 \end{frame}
 
 \begin{frame}{Past Work (Not History Independent)} 
@@ -922,7 +934,7 @@ If we want overload $O(1)$, our result is a new state of the art!
 % \end{center}
 % \end{frame}
 
-\begin{frame}{Warmup 1: The Single-Choice Strategy}
+\begin{frame}{Baseline 1: The Single-Choice Strategy}
 
 To insert a ball $x$, just put it in bin $h_1(x)$:
 
@@ -1012,7 +1024,7 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Warmup 2: Greedy Insertions}
+\begin{frame}{Baseline 2: Greedy Insertions}
   To insert a ball $x$, put it in the {\color{blue} emptier} of its choices:
 
 \begin{center}
@@ -1201,6 +1213,218 @@ Given a set $S$ of balls, define $\texttt{Greedy}(S)$ as:
 \vspace{.1 cm}
 
 \textbf{A History-Independent Algorithm:} If $S$ is the current set, use $\texttt{Greedy}(S)$.
+
+\end{frame}
+
+\begin{frame}{A Simple History-Independent Algorithm}
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+% Left picture: bins with balls (current state) - Frames 1-6
+\only<1-6>{\begin{tikzpicture}[scale=0.55]
+  \def\bw{0.9}
+  \def\bh{3.2}
+  \def\by{0}
+  \def\bgap{0.4}
+  \def\bs{0.42cm}
+  \def\bsp{0.76}
+  
+  % Draw 4 rectangular bins
+  \foreach \i in {0,...,3} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+  
+  % Bin 0: 2 balls
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 1: 2 balls
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 2: 2 balls
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 3: 1 ball
+  \foreach \j in {1} {
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  
+  % Ball x being inserted (green, between bins 0 and 3)
+  \pgfmathsetmacro{\binzeroX}{0*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\xcenter}{(\binzeroX+\binthreeX)/2}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xcenter,4.2) {\scriptsize $x$};
+  
+  % Arrows to two choices
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=0.7pt] (xball) -- (\binzeroX,\bh);
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=0.7pt] (xball) -- (\binthreeX,\bh);
+  
+  % Label below
+  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
+  \node[below] at ({0.5*\totalw}, -0.3) {\small Current state};
+  
+\end{tikzpicture}}%
+% Left picture: Updated to match Computing A_S - Frame 7+
+\only<7->{\begin{tikzpicture}[scale=0.55]
+  \def\bw{0.9}
+  \def\bh{3.2}
+  \def\by{0}
+  \def\bgap{0.4}
+  \def\bs{0.42cm}
+  \def\bsp{0.76}
+  
+  % Invisible node to match height
+  \path (0, -0.3) -- (0, 4.5);
+  
+  % Draw 4 rectangular bins
+  \foreach \i in {0,...,3} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+  
+  % Bin 0: 2 balls (1 grey + 1 green on top)
+  \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.35}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  \pgfmathsetmacro{\byy}{\by+0.35+\bsp}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20] at (\bx,\byy) {};
+  % Bin 1: 2 balls (grey)
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 2: 1 ball (grey)
+  \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.35}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  % Bin 3: 3 balls (grey)
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  
+  % Label below
+  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
+  \node[below] at ({0.5*\totalw}, -0.3) {\small Updated state};
+  
+\end{tikzpicture}}%
+\end{minipage}%
+\hfill%
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+% Right picture: Computing A_S with animation
+\only<4->{\begin{tikzpicture}[scale=0.55]
+  \def\bw{0.9}
+  \def\bh{3.2}
+  \def\by{0}
+  \def\bgap{0.4}
+  \def\bs{0.42cm}
+  \def\bsp{0.76}
+  
+  % Invisible node to match height of left picture
+  \path (0, -0.3) -- (0, 4.5);
+  
+  % Draw 4 rectangular bins (always visible from step 4)
+  \foreach \i in {0,...,3} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+  
+  % Step 5: Row of 8 balls above bins (7 grey + 1 green in middle)
+  \only<5>{
+    \foreach \i in {0,...,7} {
+      \pgfmathsetmacro{\ballx}{\i*0.55 + 0.3}
+      \ifnum\i=4
+        \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20] at (\ballx, 4.0) {};
+      \else
+        \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\ballx, 4.0) {};
+      \fi
+    }
+    \node[above] at (2.2, 4.4) {\scriptsize $x_1, x_2, \ldots, x_8$};
+  }
+  
+  % Step 6: Balls in bins (greedy assignment) - 8 balls total, loads 2,2,1,3
+  \only<6->{
+    % Bin 0: 2 balls (1 grey + 1 green on top)
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    \pgfmathsetmacro{\byy}{\by+0.35+\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20] at (\bx,\byy) {};
+    % Bin 1: 2 balls (grey)
+    \foreach \j in {1,2} {
+      \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+    % Bin 2: 1 ball (grey)
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    % Bin 3: 3 balls (grey)
+    \foreach \j in {1,2,3} {
+      \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+  }
+  
+  % Label below
+  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
+  \node[below] at ({0.5*\totalw}, -0.3) {\small Computing $A_S$};
+  
+\end{tikzpicture}}%
+\end{minipage}
+\end{center}
+
+\vfill
+
+% Step 2: Text appears
+\only<2->{%
+\hspace*{-0.5cm}
+\begin{minipage}{0.45\textwidth}
+At each time step:
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Observe current set $S$
+\item \tikz[remember picture, baseline=(step2.base)]{\node[inner sep=0pt](step2){Compute $A_S$};}
+\item Update the system to reflect $A_S$
+\end{enumerate}
+\end{minipage}
+}%
+% Step 3: Box appears
+\only<3->{%
+\begin{tikzpicture}[remember picture, overlay]
+  \node[draw, rounded corners, fill=blue!5, text width=6.5cm, align=left, anchor=west] (box) at ([xshift=1.8cm, yshift=-0.2cm]step2.east) {
+    \textbf{Compute $A_S$ by simulating greedy:}\\[2pt]
+    \hspace{0.3cm}2a. Start with empty bins\\
+    \hspace{0.3cm}2b. Sort balls in $S$ to get $x_1, x_2, \ldots$\\
+    \hspace{0.3cm}2c. Insert balls using greedy
+  };
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, blue!60!black, line width=0.8pt] (box.west) -- (step2.east);
+\end{tikzpicture}
+}
 
 \end{frame}
 
