@@ -157,7 +157,7 @@
 
 \newcommand{\TopSeq}{}% Now integrated into TwoWorldFigure
 
-\newcommand{\TwoWorldFigure}[2]{% extra tikz for world0 balls, world1 balls
+\newcommand{\TwoWorldFigure}[3][0]{% [recourse count] extra tikz for world0 balls, world1 balls
   % Center the entire picture with respect to the full slide width (\paperwidth).
   % Shift left by half of (paperwidth - textwidth) to compensate for the theme's
   % right-shift of the text area.
@@ -178,11 +178,14 @@
 
     % S_0 and S_1 labels removed for cleaner look - the animation shows insertions step by step
     % \node[font=\small, anchor=north] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},2.8) {$S_0 = x_1,x_2,x_3,x_4,\ldots$};
-    % \node[font=\small, anchor=north] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},2.8) {$S_1 = x_1,x_2,x_3,x_4,{\color{blue}x^{\star}},\ldots$};
+    % \node[font=\small, anchor=north] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},2.8) {$S_1 = x_1,x_2,x_3,x_4,{\color{blue}x},\ldots$};
 
     % world labels below bins
-    \node[font=\normalsize\bfseries] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {Computing $\texttt{Greedy}(S)$};
-    \node[font=\normalsize\bfseries] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {Computing $\texttt{Greedy}(S \cup \{x^*\})$};
+    \node[font=\normalsize] at ({\xL+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {Computing $A_S$};
+    \node[font=\normalsize] at ({\xR+1.5*(\binw+\bingap)+0.5*\binw},-2.45) {Computing $A_{S \cup \{x\}}$};
+    
+    % Recourse counter in top right
+    \node[font=\normalsize, anchor=north east] at (6.2, 2.8) {Recourse $= #1$};
 
     % bin-top coords for arrows
     \foreach \b in {1,2,3,4}{
@@ -191,8 +194,8 @@
     }
 
     % balls (passed in via arguments)
-    #1
     #2
+    #3
   \end{tikzpicture}
   }%
   \vspace{-2mm}
@@ -200,8 +203,8 @@
 
 % styles for Two-World slides (improved colors)
 \tikzset{
-  RedBallStyle/.style={draw=red!80!black, fill=red!20, text=red!80!black, line width=0.9pt},
-  BlueOutlineStyle/.style={draw=blue!80!black, fill=blue!10, text=blue!80!black, line width=0.9pt},
+  RedBallStyle/.style={draw=black, fill=black!15, text=black!70, line width=0.9pt},
+  BlueOutlineStyle/.style={draw=green!50!black, fill=green!20, text=green!50!black, line width=0.9pt},
   BlueFillStyle/.style={fill=blue!70, draw=blue!90!black, text=white, line width=0.9pt}
 }
 
@@ -1446,80 +1449,51 @@ At each time step:
 \begin{frame}{Analyzing History-Independent Greedy}
 
 \begin{center}
-\begin{tikzpicture}[scale=0.85]
-  % Dimensions matching Two-Choice Load Balancing slide
+\begin{tikzpicture}[scale=0.55]
+  % Updated state A_{S∪x} - 4 bins, loads 2,3,3,2 with green on top of bin 3
   \def\bw{0.9}
-  \def\bh{3.0}
+  \def\bh{3.2}
   \def\by{0}
-  \def\bgap{0.35}
-  \def\bs{0.48cm}
-  \def\bsp{0.55}
+  \def\bgap{0.4}
+  \def\bs{0.42cm}
+  \def\bsp{0.76}
   
-  % Draw 7 rectangular bins
-  \foreach \i in {0,...,6} {
+  % Draw 4 rectangular bins
+  \foreach \i in {0,...,3} {
     \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
     \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
     \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
     \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
   }
   
-  % Bin 0: 3 balls
-  \foreach \j in {1,2,3} {
-    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 1: 5 balls (one of x's choices - fuller)
-  \foreach \j in {1,2,3,4,5} {
-    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 2: 4 balls
-  \foreach \j in {1,2,3,4} {
-    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 3: 3 balls
-  \foreach \j in {1,2,3} {
-    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 4: 2 balls (one of x's choices - emptier, x goes here!)
+  % Bin 0: 2 balls (grey)
   \foreach \j in {1,2} {
-    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
-  % Bin 5: 4 balls
-  \foreach \j in {1,2,3,4} {
-    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 6: 3 balls
+  % Bin 1: 3 balls (grey)
   \foreach \j in {1,2,3} {
-    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
+  % Bin 2: 3 balls (grey)
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.35+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 3: 1 grey + 1 green on top (2 total)
+  \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.35}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  \pgfmathsetmacro{\byy}{\by+0.35+\bsp}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20] at (\bx,\byy) {};
   
-  % Ball x being inserted (green, centered between bins 1 and 4)
-  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\binfourX}{4*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\xcenter}{(\binoneX+\binfourX)/2}
-  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xcenter,4.5) {\scriptsize $x$};
-  
-  % Two arrows to choices - bin 1 (fuller, grey) and bin 4 (emptier, green/highlighted)
-  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, black!40, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, black!50] {\scriptsize $h_1(x)$};
-  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=1pt] (xball) -- (\binfourX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
-  
-  % Label: n bins
-  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
-  \draw[<->] (0, -0.4) -- (\totalw, -0.4);
-  \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
+  % Label below
+  \pgfmathsetmacro{\totalw}{3*(\bw+\bgap)+\bw}
+  \node[below] at ({0.5*\totalw}, -0.3) {\small Updated state $A_{S \cup \{x\}}$};
   
 \end{tikzpicture}
 \end{center}
@@ -1540,7 +1514,7 @@ At each time step:
 \TopSeq
 \TwoWorldFigure{ }{ }
 \vfill
-How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
+How many balls change assignments between $A_S$ and $A_{S \cup \{x\}}$?
 \end{frame}
 
 % --- Frame 12 (PDF p12): x1 chooses among 2 bins ---
@@ -1548,16 +1522,16 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 \TopSeq
 \TwoWorldFigure{
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.825,1.5) {$x_1$};
-  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (2.575,1.5) {$x_1$};
-  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
 % \item Two identical worlds, same insertion sequence
-% \item World 1 will later receive one extra ball $x^{\star}$
+% \item World 1 will later receive one extra ball $x$
 % \end{itemize}
 }
 \end{frame}
@@ -1574,7 +1548,7 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
 % \item Two identical worlds, same insertion sequence
-% \item World 1 will later receive one extra ball $x^{\star}$
+% \item World 1 will later receive one extra ball $x$
 % \end{itemize}
 }
 \end{frame}
@@ -1585,17 +1559,17 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 \TwoWorldFigure{
   \BallInBin{\xL}{1}{1}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-4.45,1.5) {$x_2$};
-  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \BallInBin{\xR}{1}{1}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (1.95,1.5) {$x_2$};
-  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
 % \item Two identical worlds, same insertion sequence
-% \item World 1 will later receive one extra ball $x^{\star}$
+% \item World 1 will later receive one extra ball $x$
 % \end{itemize}
 }
 \end{frame}
@@ -1614,7 +1588,7 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
 % \item Two identical worlds, same insertion sequence
-% \item World 1 will later receive one extra ball $x^{\star}$
+% \item World 1 will later receive one extra ball $x$
 % \end{itemize}
 }
 \end{frame}
@@ -1626,18 +1600,18 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
   \BallInBin{\xL}{1}{1}{}{}
   \BallInBin{\xL}{2}{1}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-4.45,1.5) {$x_3$};
-  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \BallInBin{\xR}{1}{1}{}{}
   \BallInBin{\xR}{2}{1}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (1.95,1.5) {$x_3$};
-  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
 % \item Two identical worlds, same insertion sequence
-% \item World 1 will later receive one extra ball $x^{\star}$
+% \item World 1 will later receive one extra ball $x$
 % \end{itemize}
 }
 \end{frame}
@@ -1658,7 +1632,7 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
 % \item Two identical worlds, same insertion sequence
-% \item World 1 will later receive one extra ball $x^{\star}$
+% \item World 1 will later receive one extra ball $x$
 % \end{itemize}
 }
 \end{frame}
@@ -1671,19 +1645,19 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
   \BallInBin{\xL}{2}{1}{}{}
   \BallInBin{\xL}{2}{2}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-2.575,1.5) {$x_4$};
-  \foreach \b in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \BallInBin{\xR}{1}{1}{}{}
   \BallInBin{\xR}{2}{1}{}{}
   \BallInBin{\xR}{2}{2}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.825,1.5) {$x_4$};
-  \foreach \b in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
 % \item Two identical worlds, same insertion sequence
-% \item World 1 will later receive one extra ball $x^{\star}$
+% \item World 1 will later receive one extra ball $x$
 % \end{itemize}
 }
 \end{frame}
@@ -1706,7 +1680,7 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
 % \item Two identical worlds, same insertion sequence
-% \item World 1 will later receive one extra ball $x^{\star}$
+% \item World 1 will later receive one extra ball $x$
 % \end{itemize}
 }
 \end{frame}
@@ -1724,13 +1698,13 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
   \BallInBin{\xR}{2}{1}{}{}
   \BallInBin{\xR}{2}{2}{}{}
   \BallInBin{\xR}{4}{1}{}{}
-  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,BlueOutlineStyle] (bR) at (3.825,1.5) {$x^{\star}$};
-  \foreach \bb in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},blue!70!black,line width=0.7pt] (bR) -- (RT\bb);}
+  \node[circle,draw,minimum size=0.55cm,inner sep=0pt,BlueOutlineStyle] (bR) at (3.825,1.5) {$x$};
+  \foreach \bb in {2,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},green!50!black,line width=0.7pt] (bR) -- (RT\bb);}
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
-% \item $x^{\star}$ arrives only in World 1
+% \item $x$ arrives only in World 1
 % \end{itemize}
 }
 \end{frame}
@@ -1748,12 +1722,12 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
   \BallInBin{\xR}{2}{1}{}{}
   \BallInBin{\xR}{2}{2}{}{}
   \BallInBin{\xR}{4}{1}{}{}
-  \BallInBin{\xR}{4}{2}{BlueOutlineStyle}{$x^{\star}$}
+  \BallInBin{\xR}{4}{2}{BlueOutlineStyle}{$x$}
 }
 \vfill
 \hspace*{-1cm}\parbox{\dimexpr\textwidth+1cm}{%
 % \begin{itemize}
-% \item $x^{\star}$ arrives only in World 1
+% \item $x$ arrives only in World 1
 % \end{itemize}
 }
 \end{frame}
@@ -1814,7 +1788,7 @@ Subsequent balls will experience either: \pause
   \BallInBin{\xL}{2}{2}{}{}
   \BallInBin{\xL}{4}{1}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.825,1.5) {$x_5$};
-  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \BallInBin{\xR}{1}{1}{}{}
   \BallInBin{\xR}{2}{1}{}{}
@@ -1822,7 +1796,7 @@ Subsequent balls will experience either: \pause
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (2.575,1.5) {$x_5$};
-  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 
 \vspace{.2 cm}
@@ -1873,7 +1847,7 @@ Subsequent balls will experience either:
   \BallInBin{\xL}{3}{1}{}{}
   \BallInBin{\xL}{4}{1}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.825,1.5) {$x_6$};
-  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \BallInBin{\xR}{1}{1}{}{}
   \BallInBin{\xR}{2}{1}{}{}
@@ -1882,7 +1856,7 @@ Subsequent balls will experience either:
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (2.575,1.5) {$x_6$};
-  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {1,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 
 \vspace{.2 cm}
@@ -1934,7 +1908,7 @@ Subsequent balls will experience either:
   \BallInBin{\xL}{3}{2}{}{}
   \BallInBin{\xL}{4}{1}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.2,1.5) {$x_7$};
-  \foreach \b in {2,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {2,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \BallInBin{\xR}{1}{1}{}{}
   \BallInBin{\xR}{2}{1}{}{}
@@ -1944,7 +1918,7 @@ Subsequent balls will experience either:
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.2,1.5) {$x_7$};
-  \foreach \b in {2,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {2,3}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 
 \vspace{.2 cm}
@@ -2034,7 +2008,7 @@ Subsequent balls will experience either:
   \BallInBin{\xL}{3}{3}{}{}
   \BallInBin{\xL}{4}{1}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-3.2,1.5) {$x_8$};
-  \foreach \b in {1,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {1,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \BallInBin{\xR}{1}{1}{}{}
   \BallInBin{\xR}{2}{1}{}{}
@@ -2045,7 +2019,7 @@ Subsequent balls will experience either:
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (3.2,1.5) {$x_8$};
-  \foreach \b in {1,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {1,4}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 
 \vspace{.2 cm}
@@ -2062,7 +2036,7 @@ Subsequent balls will experience either:
 % --- Frame 38: x8 placed in bin 4 (world 0) and bin 1 (world 1) ---
 \begin{frame}{Analyzing the Recourse}
 \TopSeq
-\TwoWorldFigure{
+\TwoWorldFigure[1]{
   \BallInBin{\xL}{1}{1}{}{}
   \BallInBin{\xL}{2}{1}{}{}
   \BallInBin{\xL}{2}{2}{}{}
@@ -2095,7 +2069,7 @@ Subsequent balls will experience either:
 % --- Frame 39: all grey, top ball in bin 1 world 1 is blue ---
 \begin{frame}{Analyzing the Recourse}
 \TopSeq
-\TwoWorldFigure{
+\TwoWorldFigure[1]{
   \BallInBin{\xL}{1}{1}{}{}
   \BallInBin{\xL}{2}{1}{}{}
   \BallInBin{\xL}{2}{2}{}{}
@@ -2130,7 +2104,7 @@ Subsequent balls will experience either:
 % --- Frame 40: x9 chooses between bins 1 and 2 ---
 \begin{frame}{Analyzing the Recourse}
 \TopSeq
-\TwoWorldFigure{
+\TwoWorldFigure[1]{
   \BallInBin{\xL}{1}{1}{}{}
   \BallInBin{\xL}{2}{1}{}{}
   \BallInBin{\xL}{2}{2}{}{}
@@ -2140,7 +2114,7 @@ Subsequent balls will experience either:
   \BallInBin{\xL}{4}{1}{}{}
   \BallInBin{\xL}{4}{2}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aL) at (-4.45,1.5) {$x_9$};
-  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aL) -- (LT\b);}
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aL) -- (LT\b);}
 }{
   \BallInBin{\xR}{1}{1}{}{}
   \BallInBin{\xR}{1}{2}{BlueFillStyle}{}
@@ -2152,7 +2126,7 @@ Subsequent balls will experience either:
   \BallInBin{\xR}{4}{1}{}{}
   \BallInBin{\xR}{4}{2}{}{}
   \node[circle,draw,minimum size=0.55cm,inner sep=0pt,RedBallStyle] (aR) at (1.95,1.5) {$x_9$};
-  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},red!70!black,line width=0.7pt] (aR) -- (RT\b);}
+  \foreach \b in {1,2}{\draw[-{Stealth[length=2.5mm, width=1.8mm]},black!50,line width=0.7pt] (aR) -- (RT\b);}
 }
 
 \vspace{.2 cm}
@@ -2169,7 +2143,7 @@ Subsequent balls will experience either:
 % --- Frame 41: x9 placed in bin 1 (world 0) and bin 2 (world 1) ---
 \begin{frame}{Analyzing the Recourse}
 \TopSeq
-\TwoWorldFigure{
+\TwoWorldFigure[2]{
   \BallInBin{\xL}{1}{1}{}{}
   \BallInBin{\xL}{1}{2}{RedBallStyle}{$x_9$}
   \BallInBin{\xL}{2}{1}{}{}
@@ -2204,7 +2178,7 @@ Subsequent balls will experience either:
 % --- Frame 42: all grey, top ball in bin 2 world 1 is blue ---
 \begin{frame}{Analyzing the Recourse}
 \TopSeq
-\TwoWorldFigure{
+\TwoWorldFigure[2]{
   \BallInBin{\xL}{1}{1}{}{}
   \BallInBin{\xL}{1}{2}{}{}
   \BallInBin{\xL}{2}{1}{}{}
@@ -2239,7 +2213,7 @@ Subsequent balls will experience either:
 % --- Frame 43: Two key observations ---
 \begin{frame}{Analyzing the Recourse}
 \TopSeq
-\TwoWorldFigure{
+\TwoWorldFigure[2]{
   \BallInBin{\xL}{1}{1}{}{}
   \BallInBin{\xL}{1}{2}{}{}
   \BallInBin{\xL}{2}{1}{}{}
@@ -2274,7 +2248,7 @@ Two key observations: \pause
 % --- Frame 44: Probability calculation ---
 \begin{frame}{Analyzing the Recourse}
 \TopSeq
-\TwoWorldFigure{
+\TwoWorldFigure[2]{
   \BallInBin{\xL}{1}{1}{}{}
   \BallInBin{\xL}{1}{2}{}{}
   \BallInBin{\xL}{2}{1}{}{}
