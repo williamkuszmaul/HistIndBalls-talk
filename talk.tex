@@ -292,73 +292,173 @@
   \end{center}
 \end{frame}
 
+% --- Data Structure Concept Slide (with animation) ---
+\begin{frame}{History-Independent Data Structures}
+
+\hspace*{-1cm}
+\begin{tikzpicture}[scale=0.65]
+  
+  \def\h{2.5}
+  \def\hh{0}
+  \def\hhh{-2.5}
+  \def\sp{3.8} % horizontal spacing between circles
+  
+  % Extend height for consistent layout
+  \path (-2.5, -3.2) -- (-2.5, 3.5);
+  
+  % === History 1: Always visible ===
+  % Label changes from "History:" to "History 1:" when other histories appear
+  \only<1-2>{\node[font=\small, gray] at (-2.5, \h) {History 1:};}
+  \only<3->{\node[font=\small, gray] at (-2.5, \h) {History 1:};}
+  
+  \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s0) at (0, \h) {\small $\emptyset$};
+  \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s1) at (\sp, \h) {\small $\{x\}$};
+  \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s2) at (2*\sp, \h) {\small $\{x,y\}$};
+  \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s3grey) at (3*\sp, \h) {};
+  
+  % Last circle: grey on frame 1, blue on frames 2+
+  \only<1>{\node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] at (3*\sp, \h) {\small $\{y\}$};}
+  \only<2->{\node[draw, circle, minimum size=1.1cm, fill=blue!15, draw=blue!70!black, line width=1pt] (h1s3) at (3*\sp, \h) {\small $\{y\}$};}
+  
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+    (h1s0.east) to[out=30, in=150] (h1s1.west);
+  \node[green!50!black, font=\scriptsize] at (0.5*\sp, \h+0.7) {Insert($x$)};
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+    (h1s1.east) to[out=30, in=150] (h1s2.west);
+  \node[green!50!black, font=\scriptsize] at (1.5*\sp, \h+0.7) {Insert($y$)};
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
+    (h1s2.east) to[out=30, in=150] (h1s3grey.west);
+  \node[red!70!black, font=\scriptsize] at (2.5*\sp, \h+0.7) {Delete($x$)};
+  
+  % === Adversary on the right side (appears on frame 2+) ===
+  \only<2->{
+    \node[font=\small, blue, overlay] (adv) at (3*\sp + 2.5, \h - 2.5) {\textbf{Adversary}};
+    \draw[overlay, -{Stealth[length=2.5mm, width=2mm]}, blue, line width=1.2pt] 
+      (adv.north) -- (h1s3grey.south east);
+  }
+  
+  % === History 2: Insert(y), Insert(x), Delete(x) - appears on frame 3+ ===
+  \only<3->{
+    \node[font=\small, gray] at (-2.5, \hh) {History 2:};
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h2s0) at (0, \hh) {\small $\emptyset$};
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h2s1) at (\sp, \hh) {\small $\{y\}$};
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h2s2) at (2*\sp, \hh) {\small $\{x,y\}$};
+    \node[draw, circle, minimum size=1.1cm, fill=blue!15, draw=blue!70!black, line width=1pt] (h2s3) at (3*\sp, \hh) {\small $\{y\}$};
+    
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+      (h2s0.east) to[out=30, in=150] (h2s1.west);
+    \node[green!50!black, font=\scriptsize] at (0.5*\sp, \hh+0.7) {Insert($y$)};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+      (h2s1.east) to[out=30, in=150] (h2s2.west);
+    \node[green!50!black, font=\scriptsize] at (1.5*\sp, \hh+0.7) {Insert($x$)};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
+      (h2s2.east) to[out=30, in=150] (h2s3.west);
+    \node[red!70!black, font=\scriptsize] at (2.5*\sp, \hh+0.7) {Delete($x$)};
+  }
+  
+  % === History 3: ... -> {y} -> Insert(z) -> {y,z} -> Delete(z) -> {y} - appears on frame 3+ ===
+  \only<3->{
+    \node[font=\small, gray] at (-2.5, \hhh) {History 3:};
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h3s0) at (0, \hhh) {\small $\emptyset$};
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h3s1) at (\sp, \hhh) {\small $\{y\}$};
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h3s2) at (2*\sp, \hhh) {\small $\{y,z\}$};
+    \node[draw, circle, minimum size=1.1cm, fill=blue!15, draw=blue!70!black, line width=1pt] (h3s3) at (3*\sp, \hhh) {\small $\{y\}$};
+    
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, gray, line width=1pt, dashed] 
+      (h3s0.east) -- (h3s1.west);
+    \node[gray, font=\scriptsize] at (0.5*\sp, \hhh+0.35) {$\cdots$};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+      (h3s1.east) to[out=30, in=150] (h3s2.west);
+    \node[green!50!black, font=\scriptsize] at (1.5*\sp, \hhh+0.7) {Insert($z$)};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
+      (h3s2.east) to[out=30, in=150] (h3s3.west);
+    \node[red!70!black, font=\scriptsize] at (2.5*\sp, \hhh+0.7) {Delete($z$)};
+  }
+  
+\end{tikzpicture}
+
+\vfill
+
+\only<4->{
+\begin{minipage}{0.95\textwidth}
+\textbf{History Independence} {\scriptsize \color{blue}(Micciancio '97, Naor \& Teague '01)}
+
+\vspace{0.1cm}
+\begin{itemize}
+\item The state reveals only the current elements—\textbf{not the history of operations.}
+\end{itemize}
+\end{minipage}
+}
+
+\end{frame}
+
+
+% \begin{frame}{History Independent Data Structures}
+
+% \vfill
+
+% \begin{center}
+% \begin{minipage}{0.85\textwidth}
+% \textbf{History Independence} {\small \color{blue}(Micciancio '97, Naor \& Teague '01)}
+
+% \vspace{0.4cm}
+% \hspace{0.5cm}\begin{minipage}{0.9\textwidth}
+% \textit{``If an adversary were to see the state of the data structure,
+% they would learn only the current set of elements, and nothing else about the history of past operations.''}
+% \end{minipage}
+% \end{minipage}
+% \end{center}
+
+% \vfill
+
+% \end{frame}
+
+
+
+% \begin{frame}{History vs Content}
+
+% \(
+% \<{0.35\textwidth}
+%   \begin{center}
+%   \includegraphics[height = 8 cm]{./contacts.jpg}
+%   \end{center}
+% \>
+% \<{0.65\textwidth}
+% \begin{itemize}
+% \item If someone hacks my phone, they can learn my contacts list. \pause
+
+% \vspace{0.5 cm}
+
+% \item But can they learn who my contacts were in the past? \pause
+
+% \vspace{0.5 cm}
+  
+% \item What about the order in which contacts were added? \pause
+
+% \vspace{0.5 cm}
+
+% \item A history independent data structure protects this kind of information.
+% \end{itemize}
+% \>
+% \)
+% \end{frame}
+
+
 
 \begin{frame}{History Independent Data Structures}
 
-\vfill
+% \vspace{0.8cm}
 
-\begin{center}
-\begin{minipage}{0.85\textwidth}
-\textbf{History Independence} {\small \color{blue}(Micciancio '97, Naor \& Teague '01)}
+% \textbf{History Independence} {\small \color{blue}(Micciancio '97, Naor \& Teague '01)}
 
-\vspace{0.4cm}
-\hspace{0.5cm}\begin{minipage}{0.9\textwidth}
-\textit{``If an adversary were to see the state of the data structure,
-they would learn only the current set of elements, and nothing else about the history of past operations.''}
-\end{minipage}
-\end{minipage}
-\end{center}
+% \vspace{0.3cm}
+% \hspace{0.5cm}\begin{minipage}{0.9\textwidth}
+% \textit{``If an adversary were to see the state of the data structure,
+% they would learn only the current set of elements, and nothing else about the history of past operations.''}
+% \end{minipage}
 
-\vfill
-
-\end{frame}
-
-
-
-\begin{frame}{History vs Content}
-
-\(
-\<{0.35\textwidth}
-  \begin{center}
-  \includegraphics[height = 8 cm]{./contacts.jpg}
-  \end{center}
-\>
-\<{0.65\textwidth}
-\begin{itemize}
-\item If someone hacks my phone, they can learn my contacts list. \pause
-
-\vspace{0.5 cm}
-
-\item But can they learn who my contacts were in the past? \pause
-
-\vspace{0.5 cm}
-  
-\item What about the order in which contacts were added? \pause
-
-\vspace{0.5 cm}
-
-\item A history independent data structure protects this kind of information.
-\end{itemize}
-\>
-\)
-\end{frame}
-
-
-
-\begin{frame}{History Independence is a Security Guarantee}
-
-\vspace{0.8cm}
-
-\textbf{History Independence} {\small \color{blue}(Micciancio '97, Naor \& Teague '01)}
-
-\vspace{0.3cm}
-\hspace{0.5cm}\begin{minipage}{0.9\textwidth}
-\textit{``If an adversary were to see the state of the data structure,
-they would learn only the current set of elements, and nothing else about the history of past operations.''}
-\end{minipage}
-
-\pause
-\vspace{0.6cm}
+% \pause
+% \vspace{0.6cm}
 
 \textbf{A History of Applications}
 
@@ -372,6 +472,11 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
 \vspace{0.6cm}
 
 \textbf{Yet fundamental questions remain open.}
+
+\vspace{0.5cm}
+\pause
+
+\textbf{This work:} History-Independent Load Balancing
 
 \end{frame}
 
@@ -471,12 +576,19 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
   }
   
   % Place balls in bins using foreach
-  % Bin 0: 3 balls
-  \foreach \j in {1,2,3} {
+  % Bin 0: 2 balls + 1 being deleted (top)
+  \foreach \j in {1,2} {
     \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
+  % Deleted ball (dotted red)
+  \pgfmathsetmacro{\delx}{0*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\dely}{\by+0.32+(3-1)*\bsp}
+  \node[circle, draw, dotted, minimum size=\bs, inner sep=0pt, line width=1.2pt, draw=red!70!black, fill=red!20] (delball) at (\delx,\dely) {};
+  % Curved arrow showing ball being thrown out (overlay so it doesn't shift the picture)
+  \draw[overlay, -{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=0.8pt] 
+    (delball.west) to[out=200, in=45] ++(-0.7,-0.5);
   % Bin 1: 5 balls
   \foreach \j in {1,2,3,4,5} {
     \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
@@ -532,103 +644,105 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
 \end{tikzpicture}
 \end{center}
 
-% \vspace{0.3cm}
+\pause
   \begin{itemize}
   \item Balls are {\color{green!50!black}inserted}/{\color{red!70!black}deleted}, with up to {\color{blue}$m$} present at a time.
+  \pause
   \item Each ball has two random bins where it can go. 
+  \pause
   \item We must maintain a valid assignment of balls to bins.
   \end{itemize}
 
 \end{frame}
 
-% --- OPTION A: Red dotted ball (no label) ---
-\begin{frame}{Two-Choice Load Balancing}
+% % --- OPTION A: Red dotted ball (no label) ---
+% \begin{frame}{Two-Choice Load Balancing}
 
-\vspace{0.2cm}
-\begin{center}
-\begin{tikzpicture}[scale=0.85]
-  \def\bw{0.9}
-  \def\bh{3.0}
-  \def\by{0}
-  \def\bgap{0.35}
-  \def\bs{0.48cm}
-  \def\bsp{0.55}
+% \vspace{0.2cm}
+% \begin{center}
+% \begin{tikzpicture}[scale=0.85]
+%   \def\bw{0.9}
+%   \def\bh{3.0}
+%   \def\by{0}
+%   \def\bgap{0.35}
+%   \def\bs{0.48cm}
+%   \def\bsp{0.55}
   
-  % Draw 7 rectangular bins
-  \foreach \i in {0,...,6} {
-    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
-    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
-    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
-    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
-  }
+%   % Draw 7 rectangular bins
+%   \foreach \i in {0,...,6} {
+%     \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+%     \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+%     \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+%     \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+%   }
   
-  % Bin 0: 2 balls + 1 being deleted (top)
-  \foreach \j in {1,2} {
-    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Deleted ball (dotted red, no label)
-  \pgfmathsetmacro{\delx}{0*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\dely}{\by+0.32+(3-1)*\bsp}
-  \node[circle, draw, dotted, minimum size=\bs, inner sep=0pt, line width=1.2pt, draw=red!70!black, fill=red!20] (delball) at (\delx,\dely) {};
-  % Curved arrow showing ball being thrown out (overlay so it doesn't shift the picture)
-  \draw[overlay, -{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=0.8pt] 
-    (delball.west) to[out=200, in=45] ++(-0.7,-0.5);
+%   % Bin 0: 2 balls + 1 being deleted (top)
+%   \foreach \j in {1,2} {
+%     \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+%     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+%     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+%   }
+%   % Deleted ball (dotted red, no label)
+%   \pgfmathsetmacro{\delx}{0*(\bw+\bgap)+0.5*\bw}
+%   \pgfmathsetmacro{\dely}{\by+0.32+(3-1)*\bsp}
+%   \node[circle, draw, dotted, minimum size=\bs, inner sep=0pt, line width=1.2pt, draw=red!70!black, fill=red!20] (delball) at (\delx,\dely) {};
+%   % Curved arrow showing ball being thrown out (overlay so it doesn't shift the picture)
+%   \draw[overlay, -{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=0.8pt] 
+%     (delball.west) to[out=200, in=45] ++(-0.7,-0.5);
   
-  % Remaining bins
-  \foreach \j in {1,2,3,4,5} {
-    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  \foreach \j in {1,2,3,4} {
-    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  \foreach \j in {1,2,3} {
-    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  \foreach \j in {1,2,3,4,5} {
-    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  \foreach \j in {1,2,3,4} {
-    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
-  \foreach \j in {1,2,3,4} {
-    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
-    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
-  }
+%   % Remaining bins
+%   \foreach \j in {1,2,3,4,5} {
+%     \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+%     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+%     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+%   }
+%   \foreach \j in {1,2,3,4} {
+%     \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+%     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+%     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+%   }
+%   \foreach \j in {1,2,3} {
+%     \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+%     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+%     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+%   }
+%   \foreach \j in {1,2,3,4,5} {
+%     \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+%     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+%     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+%   }
+%   \foreach \j in {1,2,3,4} {
+%     \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+%     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+%     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+%   }
+%   \foreach \j in {1,2,3,4} {
+%     \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+%     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+%     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+%   }
   
-  % Ball x being inserted (dark forest green)
-  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\xball}{(\binoneX+\binthreeX)/2}
-  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xball,4.5) {\scriptsize $x$};
-  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, green!50!black] {\scriptsize $h_1(x)$};
-  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binthreeX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
+%   % Ball x being inserted (dark forest green)
+%   \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+%   \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
+%   \pgfmathsetmacro{\xball}{(\binoneX+\binthreeX)/2}
+%   \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xball,4.5) {\scriptsize $x$};
+%   \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, green!50!black] {\scriptsize $h_1(x)$};
+%   \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binthreeX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
   
-  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
-  \draw[<->] (0, -0.4) -- (\totalw, -0.4);
-  \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
-\end{tikzpicture}
-\end{center}
+%   \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
+%   \draw[<->] (0, -0.4) -- (\totalw, -0.4);
+%   \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
+% \end{tikzpicture}
+% \end{center}
 
-  \begin{itemize}
-  \item Balls are {\color{green!50!black}inserted}/{\color{red!70!black}deleted}, with up to {\color{blue}$m$} present at a time.
-  \item Each ball has two random bins where it can go. 
-  \item We must maintain a valid assignment of balls to bins.
-  \end{itemize}
+%   \begin{itemize}
+%   \item Balls are {\color{green!50!black}inserted}/{\color{red!70!black}deleted}, with up to {\color{blue}$m$} present at a time.
+%   \item Each ball has two random bins where it can go. 
+%   \item We must maintain a valid assignment of balls to bins.
+%   \end{itemize}
 
-\end{frame}
+% \end{frame}
 
 \begin{frame}{Two Goals}
 
@@ -713,12 +827,16 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
 \vspace{.3 cm}
 
   \textbf{Minimize Overload: } \\
-  The amount by which the fullest bin exceeds $m/n$ is small. \pause
+  \begin{itemize}
+  \item i.e., the amount by which the fullest bin exceeds $m/n$. 
+  \end{itemize}\pause
 
   \vspace{.4cm}
 
   \textbf{Minimize Recourse: } \\
-  On any given insertion/deletion, the number of balls moved around is small.
+  \begin{itemize}
+  \item i.e., the number of balls moved around on any given insertion/deletion. 
+  \end{itemize}
 
 \end{frame}
 
@@ -798,67 +916,87 @@ Yes! We get {\color{blue}recourse $O(\log \log (m/n))$} and {\color{blue}overloa
 To insert a ball $x$, just put it in bin $h_1(x)$:
 
 \begin{center}
-\begin{tikzpicture}[scale=0.8]
-  % Define bin dimensions
-  \def\binwidth{0.6}
-  \def\ballradius{0.2}
-  \def\binspacing{1.0}
+\begin{tikzpicture}[scale=0.85]
+  % Dimensions matching Two-Choice Load Balancing slide
+  \def\bw{0.9}
+  \def\bh{3.0}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.48cm}
+  \def\bsp{0.55}
   
-  % Draw 7 bins as cups
-  \def\sideheight{0.15}
+  % Draw 7 rectangular bins
   \foreach \i in {0,...,6} {
-    \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
   }
   
-  % Add balls to bins (varying amounts)
   % Bin 0: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 1: 5 balls
   \foreach \j in {1,2,3,4,5} {
-    \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 2: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 3: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 4: 5 balls
   \foreach \j in {1,2,3,4,5} {
-    \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 5: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 6: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   
-  % Ball x being inserted (centered above)
-  \fill[black] (3*\binspacing + \binwidth/2, 3.5) circle (\ballradius);
-  \node[above] at (3*\binspacing + \binwidth/2, 3.5 + \ballradius) {$x$};
+  % Ball x being inserted (green, centered between bins 1 and 3 like Two-Choice slide)
+  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\xcenter}{(\binoneX+\binthreeX)/2}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xcenter,4.5) {\scriptsize $x$};
   
-  % Single arrow to h_1(x) - pointing to bin 1
-  \draw[->, thick] (3*\binspacing + \binwidth/2, 3.5 - \ballradius) to[out=-90, in=90] (1*\binspacing + \binwidth/2, 5*0.45 + \ballradius);
-  \node[right] at (2.2, 2.5) {$h_1(x)$};
+  % Single diagonal arrow to h_1(x) - pointing to bin 1
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, green!50!black] {\scriptsize $h_1(x)$};
   
   % Label: n bins
-  \draw[<->] (0, -0.4) -- (6*\binspacing + \binwidth, -0.4);
-  \node[below, blue] at (3*\binspacing + \binwidth/2, -0.4) {$n$ bins};
+  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
+  \draw[<->] (0, -0.4) -- (\totalw, -0.4);
+  \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
   
 \end{tikzpicture}
 \end{center}
 
 \pause
-\begin{itemize} 
-\item This is history-independent \hspace{0.3em}{\color{blue}\ding{51}} \pause
-\item The recourse is 0 \hspace{0.3em}{\color{blue}\ding{51}} \pause
+\begin{itemize}
+\item This is history-independent \hspace{0.3em}{\color{green!50!black}\ding{51}} \pause
+\item The recourse is 0 \hspace{0.3em}{\color{green!50!black}\ding{51}} \pause
 \item But... the overload is huge, roughly $\sqrt{m/n}$ \hspace{0.3em}{\color{red}\ding{55}}
 \end{itemize}
 \end{frame}
@@ -867,62 +1005,80 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
   To insert a ball $x$, put it in the {\color{blue} emptier} of its choices:
 
 \begin{center}
-\begin{tikzpicture}[scale=0.8]
-  % Define bin dimensions
-  \def\binwidth{0.6}
-  \def\ballradius{0.2}
-  \def\binspacing{1.0}
+\begin{tikzpicture}[scale=0.85]
+  % Dimensions matching Two-Choice Load Balancing slide
+  \def\bw{0.9}
+  \def\bh{3.0}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.48cm}
+  \def\bsp{0.55}
   
-  % Draw 7 bins as cups
-  \def\sideheight{0.15}
+  % Draw 7 rectangular bins
   \foreach \i in {0,...,6} {
-    \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
   }
   
-  % Add balls to bins
   % Bin 0: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 1: 5 balls (one of x's choices - fuller)
   \foreach \j in {1,2,3,4,5} {
-    \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 2: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 3: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 4: 2 balls (one of x's choices - emptier, x goes here!)
   \foreach \j in {1,2} {
-    \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 5: 4 balls
   \foreach \j in {1,2,3,4} {
-    \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   % Bin 6: 3 balls
   \foreach \j in {1,2,3} {
-    \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
+    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   
-  % Ball x being inserted (centered above)
-  \fill[black] (2.5*\binspacing + \binwidth/2, 3.5) circle (\ballradius);
-  \node[above] at (2.5*\binspacing + \binwidth/2, 3.5 + \ballradius) {$x$};
+  % Ball x being inserted (green, centered between bins 1 and 4)
+  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\binfourX}{4*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\xcenter}{(\binoneX+\binfourX)/2}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xcenter,4.5) {\scriptsize $x$};
   
-  % Two arrows to choices - bin 1 (fuller) and bin 4 (emptier)
-  \draw[->, thick, gray] (2.5*\binspacing + \binwidth/2 - 0.1, 3.5 - \ballradius) to[out=-150, in=90] (1*\binspacing + \binwidth/2, 5*0.45 + \ballradius);
-  \node[left, gray] at (1.3, 2.8) {$h_1(x)$};
-  
-  \draw[->, thick, blue, line width=1.5pt] (2.5*\binspacing + \binwidth/2 + 0.1, 3.5 - \ballradius) to[out=-30, in=90] (4*\binspacing + \binwidth/2, 2*0.45 + \ballradius);
-  \node[right, blue] at (4.0, 2.8) {$h_2(x)$};
+  % Two arrows to choices - bin 1 (fuller, grey) and bin 4 (emptier, blue/highlighted)
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, black!40, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, black!50] {\scriptsize $h_1(x)$};
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=1pt] (xball) -- (\binfourX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
   
   % Label: n bins
-  \draw[<->] (0, -0.4) -- (6*\binspacing + \binwidth, -0.4);
-  \node[below, blue] at (3*\binspacing + \binwidth/2, -0.4) {$n$ bins};
+  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
+  \draw[<->] (0, -0.4) -- (\totalw, -0.4);
+  \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
   
 \end{tikzpicture}
 \end{center}
@@ -931,8 +1087,8 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 
   \begin{itemize}
   \item This is \textbf{not} history-independent  \hspace{0.3em}{\color{red}\ding{55}} \pause
-  \item The recourse is 0 \hspace{0.3em}{\color{blue}\ding{51}} \pause
-  \item In the insertion-only case, the overload is $O(\log \log n)$ \hspace{0.3em}{\color{blue}\ding{51}} \\
+  \item The recourse is 0 \hspace{0.3em}{\color{green!50!black}\ding{51}} \pause
+  \item In the insertion-only case, the overload is $O(\log \log n)$ \hspace{0.3em}{\color{green!50!black}\ding{51}} \\
   {\hfill \color{gray} [Azar, Broder, Karlin and Upfal '94]}
   \end{itemize}
 
@@ -942,153 +1098,187 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 
 \end{frame}
 
-\begin{frame}{A Simple History-Independent Algorithm}
+\begin{frame}{A Simple History-Independent Algorithm}\pause
 
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+  % Dimensions matching Two-Choice Load Balancing slide
+  \def\bw{0.9}
+  \def\bh{3.0}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.48cm}
+  \def\bsp{0.55}
+  
+  % Draw 7 rectangular bins
+  \foreach \i in {0,...,6} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+  
+  % Bin 0: 3 balls
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 1: 5 balls (one of x's choices - fuller)
+  \foreach \j in {1,2,3,4,5} {
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 2: 4 balls
+  \foreach \j in {1,2,3,4} {
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 3: 3 balls
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 4: 2 balls (one of x's choices - emptier, x goes here!)
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 5: 4 balls
+  \foreach \j in {1,2,3,4} {
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 6: 3 balls
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  
+  % Ball x being inserted (green, centered between bins 1 and 4)
+  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\binfourX}{4*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\xcenter}{(\binoneX+\binfourX)/2}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xcenter,4.5) {\scriptsize $x$};
+  
+  % Two arrows to choices - bin 1 (fuller, grey) and bin 4 (emptier, green/highlighted)
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, black!40, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, black!50] {\scriptsize $h_1(x)$};
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=1pt] (xball) -- (\binfourX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
+  
+  % Label: n bins
+  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
+  \draw[<->] (0, -0.4) -- (\totalw, -0.4);
+  \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
+  
+\end{tikzpicture}
+\end{center}
 
-  \begin{center}
-    \begin{tikzpicture}[scale=0.8]
-      % Define bin dimensions
-      \def\binwidth{0.6}
-      \def\ballradius{0.2}
-      \def\binspacing{1.0}
-      
-      % Draw 7 bins as cups
-      \def\sideheight{0.15}
-      \foreach \i in {0,...,6} {
-        \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
-      }
-      
-      % Add balls to bins
-      % Bin 0: 3 balls
-      \foreach \j in {1,2,3} {
-        \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 1: 5 balls (one of x's choices - fuller)
-      \foreach \j in {1,2,3,4,5} {
-        \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 2: 4 balls
-      \foreach \j in {1,2,3,4} {
-        \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 3: 3 balls
-      \foreach \j in {1,2,3} {
-        \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 4: 2 balls (one of x's choices - emptier, x goes here!)
-      \foreach \j in {1,2} {
-        \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 5: 4 balls
-      \foreach \j in {1,2,3,4} {
-        \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 6: 3 balls
-      \foreach \j in {1,2,3} {
-        \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      
-      % Ball x being inserted (centered above)
-      \fill[black] (2.5*\binspacing + \binwidth/2, 3.5) circle (\ballradius);
-      \node[above] at (2.5*\binspacing + \binwidth/2, 3.5 + \ballradius) {$x$};
-      
-      % Two arrows to choices - bin 1 (fuller) and bin 4 (emptier)
-      \draw[->, thick, gray] (2.5*\binspacing + \binwidth/2 - 0.1, 3.5 - \ballradius) to[out=-150, in=90] (1*\binspacing + \binwidth/2, 5*0.45 + \ballradius);
-      \node[left, gray] at (1.3, 2.8) {$h_1(x)$};
-      
-      \draw[->, thick, blue, line width=1.5pt] (2.5*\binspacing + \binwidth/2 + 0.1, 3.5 - \ballradius) to[out=-30, in=90] (4*\binspacing + \binwidth/2, 2*0.45 + \ballradius);
-      \node[right, blue] at (4.0, 2.8) {$h_2(x)$};
-      
-      % Label: n bins
-      \draw[<->] (0, -0.4) -- (6*\binspacing + \binwidth, -0.4);
-      \node[below, blue] at (3*\binspacing + \binwidth/2, -0.4) {$n$ bins};
-      
-    \end{tikzpicture}
-    \end{center}
-    
-
-
+\vspace{-0.2cm}
 Given a set $S$ of balls, define $\texttt{Greedy}(S)$ as:
-\begin{itemize}
+\begin{itemize}\setlength{\itemsep}{0pt}
 \item Start with empty bins.
 \item Sort the balls in $S$ to get a sequence $x_1, x_2, \ldots$.
 \item Insert $x_1, x_2, \ldots$ using the greedy algorithm. 
 \end{itemize} \pause
 
-\vspace{.2 cm}
+\vspace{.1 cm}
 
-\textbf{A History-Independent Algorithm:} At any given moment, if $S$ is the current set of balls, use allocation $\texttt{Greedy}(S)$.
+\textbf{A History-Independent Algorithm:} If $S$ is the current set, use $\texttt{Greedy}(S)$.
 
 \end{frame}
 
 \begin{frame}{Analyzing History-Independent Greedy}
 
-  \begin{center}
-    \begin{tikzpicture}[scale=0.8]
-      % Define bin dimensions
-      \def\binwidth{0.6}
-      \def\ballradius{0.2}
-      \def\binspacing{1.0}
-      
-      % Draw 7 bins as cups
-      \def\sideheight{0.15}
-      \foreach \i in {0,...,6} {
-        \draw[thick] (\i*\binspacing, \sideheight) -- (\i*\binspacing, 0) -- (\i*\binspacing + \binwidth, 0) -- (\i*\binspacing + \binwidth, \sideheight);
-      }
-      
-      % Add balls to bins
-      % Bin 0: 3 balls
-      \foreach \j in {1,2,3} {
-        \fill[black] (0*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 1: 5 balls (one of x's choices - fuller)
-      \foreach \j in {1,2,3,4,5} {
-        \fill[black] (1*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 2: 4 balls
-      \foreach \j in {1,2,3,4} {
-        \fill[black] (2*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 3: 3 balls
-      \foreach \j in {1,2,3} {
-        \fill[black] (3*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 4: 2 balls (one of x's choices - emptier, x goes here!)
-      \foreach \j in {1,2} {
-        \fill[black] (4*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 5: 4 balls
-      \foreach \j in {1,2,3,4} {
-        \fill[black] (5*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      % Bin 6: 3 balls
-      \foreach \j in {1,2,3} {
-        \fill[black] (6*\binspacing + \binwidth/2, \j*0.45 - 0.1) circle (\ballradius);
-      }
-      
-      % Ball x being inserted (centered above)
-      \fill[black] (2.5*\binspacing + \binwidth/2, 3.5) circle (\ballradius);
-      \node[above] at (2.5*\binspacing + \binwidth/2, 3.5 + \ballradius) {$x$};
-      
-      % Two arrows to choices - bin 1 (fuller) and bin 4 (emptier)
-      \draw[->, thick, gray] (2.5*\binspacing + \binwidth/2 - 0.1, 3.5 - \ballradius) to[out=-150, in=90] (1*\binspacing + \binwidth/2, 5*0.45 + \ballradius);
-      \node[left, gray] at (1.3, 2.8) {$h_1(x)$};
-      
-      \draw[->, thick, blue, line width=1.5pt] (2.5*\binspacing + \binwidth/2 + 0.1, 3.5 - \ballradius) to[out=-30, in=90] (4*\binspacing + \binwidth/2, 2*0.45 + \ballradius);
-      \node[right, blue] at (4.0, 2.8) {$h_2(x)$};
-      
-      % Label: n bins
-      \draw[<->] (0, -0.4) -- (6*\binspacing + \binwidth, -0.4);
-      \node[below, blue] at (3*\binspacing + \binwidth/2, -0.4) {$n$ bins};
-      
-    \end{tikzpicture}
-    \end{center}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  % Dimensions matching Two-Choice Load Balancing slide
+  \def\bw{0.9}
+  \def\bh{3.0}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.48cm}
+  \def\bsp{0.55}
+  
+  % Draw 7 rectangular bins
+  \foreach \i in {0,...,6} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,\bh);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},\bh);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+  
+  % Bin 0: 3 balls
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 1: 5 balls (one of x's choices - fuller)
+  \foreach \j in {1,2,3,4,5} {
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 2: 4 balls
+  \foreach \j in {1,2,3,4} {
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 3: 3 balls
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 4: 2 balls (one of x's choices - emptier, x goes here!)
+  \foreach \j in {1,2} {
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 5: 4 balls
+  \foreach \j in {1,2,3,4} {
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 6: 3 balls
+  \foreach \j in {1,2,3} {
+    \pgfmathsetmacro{\bx}{6*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+  }
+  
+  % Ball x being inserted (green, centered between bins 1 and 4)
+  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\binfourX}{4*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\xcenter}{(\binoneX+\binfourX)/2}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xcenter,4.5) {\scriptsize $x$};
+  
+  % Two arrows to choices - bin 1 (fuller, grey) and bin 4 (emptier, green/highlighted)
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, black!40, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, black!50] {\scriptsize $h_1(x)$};
+  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=1pt] (xball) -- (\binfourX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
+  
+  % Label: n bins
+  \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
+  \draw[<->] (0, -0.4) -- (\totalw, -0.4);
+  \node[below, blue] at ({0.5*\totalw}, -0.4) {$n$ bins};
+  
+\end{tikzpicture}
+\end{center}
 
     \pause
     \begin{itemize}
-    \item The algorithm is history independent \hspace{0.3em}{\color{blue}\ding{51}}  \pause 
-    \item The overload is $O(\log \log n)$ \hspace{0.3em}{\color{blue}\ding{51}} \pause 
-    \item But what about the recourse?
+    \item The algorithm is history independent \hspace{0.3em}{\color{green!50!black}\ding{51}}  \pause 
+    \item The overload is $O(\log \log n)$ \hspace{0.3em}{\color{green!50!black}\ding{51}} \pause 
+    \item What is the recourse?
     \end{itemize}
 \end{frame}
 
@@ -1319,25 +1509,25 @@ How does $\texttt{Greedy}(S)$ change if we add a ball $x^{\star}$?
 \end{frame}
 
 % --- Frame 26: Question about divergence ---
-\begin{frame}{Analyzing the Recourse}
-\TopSeq
-\TwoWorldFigure{
-  \BallInBin{\xL}{1}{1}{}{}
-  \BallInBin{\xL}{2}{1}{}{}
-  \BallInBin{\xL}{2}{2}{}{}
-  \BallInBin{\xL}{4}{1}{}{}
-}{
-  \BallInBin{\xR}{1}{1}{}{}
-  \BallInBin{\xR}{2}{1}{}{}
-  \BallInBin{\xR}{2}{2}{}{}
-  \BallInBin{\xR}{4}{1}{}{}
-  \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
-}
-\vfill
-\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
-% \textbf{Question:} How do subsequent insertions differ between the two worlds?
-}
-\end{frame}
+% \begin{frame}{Analyzing the Recourse}
+% \TopSeq
+% \TwoWorldFigure{
+%   \BallInBin{\xL}{1}{1}{}{}
+%   \BallInBin{\xL}{2}{1}{}{}
+%   \BallInBin{\xL}{2}{2}{}{}
+%   \BallInBin{\xL}{4}{1}{}{}
+% }{
+%   \BallInBin{\xR}{1}{1}{}{}
+%   \BallInBin{\xR}{2}{1}{}{}
+%   \BallInBin{\xR}{2}{2}{}{}
+%   \BallInBin{\xR}{4}{1}{}{}
+%   \BallInBin{\xR}{4}{2}{BlueFillStyle}{}
+% }
+% \vfill
+% \hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+% % \textbf{Question:} How do subsequent insertions differ between the two worlds?
+% }
+% \end{frame}
 
 % --- Frame 27 (PDF p27): future insertions: option 1 (No recourse) ---
 \begin{frame}{Analyzing the Recourse}
