@@ -311,39 +311,45 @@
   % Extend height for consistent layout
   \path (-2.5, -3.2) -- (-2.5, 3.5);
   
-  % === History 1: Always visible ===
-  % Label changes from "History:" to "History 1:" when other histories appear
-  \only<1-2>{\node[font=\small, gray] at (-2.5, \h) {History 1:};}
-  \only<3->{\node[font=\small, gray] at (-2.5, \h) {History 1:};}
-  
-  \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s0) at (0, \h) {\small $\emptyset$};
-  \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s1) at (\sp, \h) {\small $\{x\}$};
-  \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s2) at (2*\sp, \h) {\small $\{x,y\}$};
-  \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s3grey) at (3*\sp, \h) {};
-  
-  % Last circle: grey on frame 1, blue on frames 2+
-  \only<1>{\node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] at (3*\sp, \h) {\small $\{y\}$};}
-  \only<2->{\node[draw, circle, minimum size=1.1cm, fill=blue!15, draw=blue!70!black, line width=1pt] (h1s3) at (3*\sp, \h) {\small $\{y\}$};}
-  
-  \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
-    (h1s0.east) to[out=30, in=150] (h1s1.west);
-  \node[green!50!black, font=\scriptsize] at (0.5*\sp, \h+0.7) {Insert($x$)};
-  \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
-    (h1s1.east) to[out=30, in=150] (h1s2.west);
-  \node[green!50!black, font=\scriptsize] at (1.5*\sp, \h+0.7) {Insert($y$)};
-  \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
-    (h1s2.east) to[out=30, in=150] (h1s3grey.west);
-  \node[red!70!black, font=\scriptsize] at (2.5*\sp, \h+0.7) {Delete($x$)};
-  
-  % === Adversary on the right side (appears on frame 2+) ===
+  % === History 1: appears on frame 2+ ===
   \only<2->{
+    % Label
+    \node[font=\small, gray] at (-2.5, \h) {History 1:};
+    
+    % First three circles (always grey)
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s0) at (0, \h) {\small $\emptyset$};
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s1) at (\sp, \h) {\small $\{x\}$};
+    \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s2) at (2*\sp, \h) {\small $\{x,y\}$};
+    
+    % Arrows
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+      (h1s0.east) to[out=30, in=150] (h1s1.west);
+    \node[green!50!black, font=\scriptsize] at (0.5*\sp, \h+0.7) {Insert($x$)};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+      (h1s1.east) to[out=30, in=150] (h1s2.west);
+    \node[green!50!black, font=\scriptsize] at (1.5*\sp, \h+0.7) {Insert($y$)};
+  }
+  
+  % Last circle: grey on frame 2, blue on frames 3+
+  \only<2>{\node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s3grey) at (3*\sp, \h) {\small $\{y\}$};}
+  \only<3->{\node[draw, circle, minimum size=1.1cm, fill=blue!15, draw=blue!70!black, line width=1pt] (h1s3grey) at (3*\sp, \h) {\small $\{y\}$};}
+  
+  % Delete arrow (appears with History 1)
+  \only<2->{
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
+      (h1s2.east) to[out=30, in=150] (h1s3grey.west);
+    \node[red!70!black, font=\scriptsize] at (2.5*\sp, \h+0.7) {Delete($x$)};
+  }
+  
+  % === Adversary on the right side (appears on frame 3+) ===
+  \only<3->{
     \node[font=\small, blue, overlay] (adv) at (3*\sp + 2.5, \h - 2.5) {\textbf{Adversary}};
     \draw[overlay, -{Stealth[length=2.5mm, width=2mm]}, blue, line width=1.2pt] 
       (adv.north) -- (h1s3grey.south east);
   }
   
-  % === History 2: Insert(y), Insert(x), Delete(x) - appears on frame 3+ ===
-  \only<3->{
+  % === History 2: Insert(y), Insert(x), Delete(x) - appears on frame 5+ ===
+  \only<5->{
     \node[font=\small, gray] at (-2.5, \hh) {History 2:};
     \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h2s0) at (0, \hh) {\small $\emptyset$};
     \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h2s1) at (\sp, \hh) {\small $\{y\}$};
@@ -361,8 +367,8 @@
     \node[red!70!black, font=\scriptsize] at (2.5*\sp, \hh+0.7) {Delete($x$)};
   }
   
-  % === History 3: ... -> {y} -> Insert(z) -> {y,z} -> Delete(z) -> {y} - appears on frame 3+ ===
-  \only<3->{
+  % === History 3: ... -> {y} -> Insert(z) -> {y,z} -> Delete(z) -> {y} - appears on frame 5+ ===
+  \only<5->{
     \node[font=\small, gray] at (-2.5, \hhh) {History 3:};
     \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h3s0) at (0, \hhh) {\small $\emptyset$};
     \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h3s1) at (\sp, \hhh) {\small $\{y\}$};
@@ -572,6 +578,9 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
   \def\bs{0.48cm}    % ball size
   \def\bsp{0.55}     % ball spacing
   
+  % Fixed bounding box to prevent shifting when elements appear
+  \path[use as bounding box] (-1, -1) rectangle (9, 5);
+  
   % Draw 7 rectangular bins
   \foreach \i in {0,...,6} {
     \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
@@ -587,13 +596,15 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
     \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
-  % Deleted ball (dotted red)
-  \pgfmathsetmacro{\delx}{0*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\dely}{\by+0.32+(3-1)*\bsp}
-  \node[circle, draw, dotted, minimum size=\bs, inner sep=0pt, line width=1.2pt, draw=red!70!black, fill=red!20] (delball) at (\delx,\dely) {};
-  % Curved arrow showing ball being thrown out (overlay so it doesn't shift the picture)
-  \draw[overlay, -{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=0.8pt] 
-    (delball.west) to[out=200, in=45] ++(-0.7,-0.5);
+  % Deleted ball (dotted red) - appears with first bullet point
+  \only<2->{
+    \pgfmathsetmacro{\delx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\dely}{\by+0.32+(3-1)*\bsp}
+    \node[circle, draw, dotted, minimum size=\bs, inner sep=0pt, line width=1.2pt, draw=red!70!black, fill=red!20] (delball) at (\delx,\dely) {};
+    % Curved arrow showing ball being thrown out (overlay so it doesn't shift the picture)
+    \draw[overlay, -{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=0.8pt] 
+      (delball.west) to[out=200, in=45] ++(-0.7,-0.5);
+  }
   % Bin 1: 5 balls
   \foreach \j in {1,2,3,4,5} {
     \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
@@ -631,15 +642,17 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
     \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
   }
   
-  % Ball x being inserted (dark forest green, centered between its two choices)
-  \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\xball}{(\binoneX+\binthreeX)/2}
-  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xball,4.5) {\scriptsize $x$};
-  
-  % Straight arrows to two bins (bin 1 and bin 3) with labels
-  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, green!50!black] {\scriptsize $h_1(x)$};
-  \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binthreeX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
+  % Ball x being inserted (dark forest green, centered between its two choices) - appears with first bullet point
+  \only<2->{
+    \pgfmathsetmacro{\binoneX}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\binthreeX}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\xball}{(\binoneX+\binthreeX)/2}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, draw=green!50!black, fill=green!20, text=green!50!black] (xball) at (\xball,4.5) {\scriptsize $x$};
+    
+    % Straight arrows to two bins (bin 1 and bin 3) with labels
+    \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binoneX,\bh) node[midway, left, green!50!black] {\scriptsize $h_1(x)$};
+    \draw[-{Stealth[length=2.5mm, width=1.8mm]}, green!50!black, line width=0.7pt] (xball) -- (\binthreeX,\bh) node[midway, right, green!50!black] {\scriptsize $h_2(x)$};
+  }
   
   % Label: n bins
   \pgfmathsetmacro{\totalw}{6*(\bw+\bgap)+\bw}
@@ -649,13 +662,10 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
 \end{tikzpicture}
 \end{center}
 
-\pause
   \begin{itemize}
-  \item Balls are {\color{green!50!black}inserted}/{\color{red!70!black}deleted}, with up to {\color{blue}$m$} present at a time.
-  \pause
-  \item Each ball has two random bins where it can go. 
-  \pause
-  \item We must maintain a valid assignment of balls to bins.
+  \item<2-> Balls are {\color{green!50!black}inserted}/{\color{red!70!black}deleted}, with up to {\color{blue}$m$} present at a time.
+  \item<3-> Each ball has two random bins where it can go. 
+  \item<4-> We must maintain a valid assignment of balls to bins.
   \end{itemize}
 
 \end{frame}
@@ -852,7 +862,7 @@ Hash tables, trees, memory allocation, PMAs, graph algorithms, cache-oblivious d
   \begin{minipage}{0.95\textwidth}
   \textbf{History-Independent Load Balancing:}\pause 
   \begin{itemize}
-  \item For all sets $S$ of balls, if the current set is $S$, then the assignment is always $A_S$.
+  \item For all sets $S$ of balls: If the current set is $S$, then the assignment is always $A_S$.
   \end{itemize}
   \end{minipage}
 
@@ -1220,14 +1230,15 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 % 
 % \end{frame}
 
-\begin{frame}{A Simple History-Independent Algorithm}
+\begin{frame}{Warmup: History-Independent Greedy}
 
 \vspace{0.5cm}
 
+\only<2->{%
 \begin{center}
 \begin{minipage}[b]{0.45\textwidth}
 \centering
-% Left picture: Current state A_S (always visible)
+% Left picture: Current state A_S (appears on frame 2+)
 \begin{tikzpicture}[scale=0.55]
   \def\bw{0.9}
   \def\bh{3.2}
@@ -1315,8 +1326,8 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
     \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
   }
   
-  % Frame 3: Row of 10 balls above bins (9 grey + 1 green as 5th ball)
-  \only<3>{
+  % Frame 4: Row of 10 balls above bins (9 grey + 1 green as 5th ball)
+  \only<4>{
     \foreach \i in {0,...,9} {
       \pgfmathsetmacro{\ballx}{\i*0.76 - 1.0}
       \ifnum\i=4
@@ -1327,8 +1338,8 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
     }
   }
   
-  % Frame 4+: Balls in bins (greedy assignment) - 10 balls total, loads 2,3,3,2 with green in bin 3
-  \only<4->{
+  % Frame 5+: Balls in bins (greedy assignment) - 10 balls total, loads 2,3,3,2 with green in bin 3
+  \only<5->{
     % Bin 0: 2 balls (grey)
     \foreach \j in {1,2} {
       \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
@@ -1362,13 +1373,14 @@ To insert a ball $x$, just put it in bin $h_1(x)$:
 \end{tikzpicture}%
 \end{minipage}
 \end{center}
+}% end of only<2->
 
 \vfill
 \vspace{0.5cm}
 
-% Text area with the greedy simulation steps (appears on frame 2+)
-\only<2->{%
-To insert a new ball $x$, we compute $A_{S \cup \{x\}}$:
+% Text area with the greedy simulation steps (appears on frame 3+)
+\only<3->{%
+To compute $A_{S \cup \{x\}}$:
 \begin{enumerate}\setlength{\itemsep}{0pt}
 \item Empty out the bins.
 \item Sort the balls in $S \cup \{x\}$ to get $x_1, x_2, \ldots$
