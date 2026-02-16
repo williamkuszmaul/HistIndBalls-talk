@@ -3210,21 +3210,192 @@ After $O(\log \log (m/n))$ rounds of slice-and-spread, the cumulative overload i
 
 \begin{frame}{Challenge $1$: Slicing Failures}
 
-  \vfill
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+  \def\bw{0.9}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.42cm}
+  \def\bsp{0.55}
 
-  \textbf{Challenge:} There may not be enough fresh randomness in each bin. Not enough balls assigned to that round in that bin.
+  % Draw 6 bins (bins 2 and 5 in red for failure)
+  \foreach \i in {0,1,3,4} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=0.8pt, black!80] (\xx,\by) -- (\xx,3.8);
+    \draw[line width=0.8pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},3.8);
+    \draw[line width=0.8pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+  \foreach \i in {2,5} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1.2pt, red!70!black] (\xx,\by) -- (\xx,3.8);
+    \draw[line width=1.2pt, red!70!black] ({\xx+\bw},\by) -- ({\xx+\bw},3.8);
+    \draw[line width=1.2pt, red!70!black] (\xx,\by) -- ({\xx+\bw},\by);
+  }
 
-  \textbf{Result:} We won't be able to slice off enough balls, and so the jaggedness will remain.
+  % Grey balls below slice (3 per bin)
+  \foreach \bin in {0,...,5} {
+    \foreach \j in {1,...,3} {
+      \pgfmathsetmacro{\bx}{\bin*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
+    }
+  }
+
+  % Slice line
+  \pgfmathsetmacro{\sliceY}{\by+0.30+2.5*\bsp}
+  \draw[dashed, line width=1.2pt, red!70!black] (-0.3,\sliceY) -- (7.45,\sliceY);
+  \node[left, red!70!black, font=\large] at (-0.5,\sliceY) {\ding{34}};
+
+  % Extra grey balls above the slice line
+  % Bin 0 (bin 1): load 4, 1 ball above line
+  \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.30+3*\bsp}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
+  % Bin 1 (bin 2): load 7, 4 balls above line
+  \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+  \foreach \j in {4,...,7} {
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 2 (bin 3): load 5, 2 balls above line
+  \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+  \foreach \j in {4,5} {
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 3 (bin 4): load 3, 0 balls above line
+  % Bin 4 (bin 5): load 6, 3 balls above line
+  \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+  \foreach \j in {4,...,6} {
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
+  }
+  % Bin 5 (bin 6): load 5, 2 balls above line
+  \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+  \foreach \j in {4,5} {
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
+  }
+
+  % Orange round-k overlays on topmost N balls
+  % Bin 0 (bin 1): top 2 → levels 3,4
+  \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+  \foreach \j in {3,4} {
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
+  }
+  % Bin 1 (bin 2): top 4 → levels 4,5,6,7
+  \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+  \foreach \j in {4,...,7} {
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
+  }
+  % Bin 2 (bin 3): 0 round-k
+  % Bin 3 (bin 4): top 1 → level 3
+  \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.30+2*\bsp}
+  \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
+  % Bin 4 (bin 5): top 3 → levels 4,5,6
+  \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+  \foreach \j in {4,...,6} {
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
+  }
+  % Bin 5 (bin 6): top 1 → level 5
+  \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.30+4*\bsp}
+  \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
+
+  % Legend
+  \node[right, font=\small] at (8.0, 2.5) {\tikz\node[circle, draw=orange!80!black, minimum size=0.35cm, inner sep=0pt, fill=orange!30, font=\tiny]{$k$}; = round $k$ ball};
+  \node[right, font=\small] at (8.0, 1.8) {\tikz\node[circle, draw, minimum size=0.35cm, inner sep=0pt, fill=black!15]{}; = other round};
+
+\end{tikzpicture}
+\end{center}
+
+\pause
+
+\textbf{Challenge:} Some bins may not have enough round-$k$ balls above the line.
+
+\pause
+
+\textbf{Result:} We can't slice evenly --- the jaggedness remains in those bins.
 
 \end{frame}
 
 \begin{frame}{Challenge $2$: Spreading Failures}
 
-  \vfill
+\begin{center}
+\begin{tikzpicture}[scale=0.75]
+  \def\bw{0.9}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.42cm}
+  \def\bsp{0.55}
 
-  \textbf{Challenge:}Spreading step got unlucky and didn't spread very evenly. There's more jaggedness than we want
+  % Draw 6 bins
+  \foreach \i in {0,...,5} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=0.8pt, black!80] (\xx,\by) -- (\xx,3.8);
+    \draw[line width=0.8pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},3.8);
+    \draw[line width=0.8pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
 
-  \textbf{Result:} Either we have to slice more balls than we want and may not get the overload down, or we have to slice less balls than we want and may not get the jaggedness down.
+  % Grey balls below slice (3 per bin)
+  \foreach \bin in {0,...,5} {
+    \foreach \j in {1,...,3} {
+      \pgfmathsetmacro{\bx}{\bin*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
+    }
+  }
+
+  % Slice line
+  \pgfmathsetmacro{\sliceY}{\by+0.30+2.5*\bsp}
+  \draw[dashed, line width=1.2pt, red!70!black] (-0.3,\sliceY) -- (7.45,\sliceY);
+
+  % Green balls after spreading — very uneven distribution!
+  % Bin 0: +4 green (levels 4-7) — way too many
+  \foreach \j in {4,...,7} {
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=green!20] at (\bx,\byy) {};
+  }
+  % Bin 1: +0 green — got nothing
+  % Bin 2: +1 green (level 4)
+  \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.30+3*\bsp}
+  \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=green!20] at (\bx,\byy) {};
+  % Bin 3: +5 green (levels 4-8) — way too many
+  \foreach \j in {4,...,8} {
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
+    \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=green!20] at (\bx,\byy) {};
+  }
+  % Bin 4: +1 green (level 4)
+  \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.30+3*\bsp}
+  \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=green!20] at (\bx,\byy) {};
+  % Bin 5: +1 green (level 4)
+  \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.30+3*\bsp}
+  \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=green!20] at (\bx,\byy) {};
+
+
+\end{tikzpicture}
+\end{center}
+
+\pause
+
+\textbf{Challenge:} The spreading step may distribute balls unevenly --- creating new jaggedness.
+
+\pause
+
+\textbf{Dilemma:}
+\begin{itemize}
+  \item Slice \textbf{more} balls $\implies$ overload may not decrease
+  \item Slice \textbf{fewer} balls $\implies$ jaggedness may not decrease
+\end{itemize}
 
 \end{frame}
 
