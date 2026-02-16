@@ -2315,6 +2315,281 @@ Two key observations: \pause
   \vspace{1 cm}
 \end{frame}
 
+
+\begin{frame}{Slice and Spread}
+
+  \vfill
+
+  \begin{enumerate}
+    \item \textbf{Slice} off the jagged surface
+    \item \textbf{Spread} balls to their other bin choices
+  \end{enumerate}
+
+\end{frame}
+
+% ===== TEST ANIMATION: Slice and Spread =====
+% Loads: 4, 7, 5, 3, 6, 5  (threshold = 3)
+% Sliced: bin0 ×1, bin1 ×4, bin2 ×2, bin3 ×0, bin4 ×3, bin5 ×2  (12 total)
+% Spread: 12 balls → 2 per bin → all bins end at 5
+\begin{frame}{Slice and Spread (Test Animation)}
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  \def\bw{0.9}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.48cm}
+  \def\bsp{0.58}
+
+  % Fixed bounding box so bins don't shift between overlays
+  \path[use as bounding box] (-0.5, -0.5) rectangle (8.5, 5.5);
+
+  % ---- Draw 6 bins (always visible) ----
+  \foreach \i in {0,...,5} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,4.2);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},4.2);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
+
+  % Bin number labels
+  \foreach \i in {0,...,5} {
+    \pgfmathsetmacro{\bx}{\i*(\bw+\bgap)+0.5*\bw}
+    \node[below, font=\scriptsize] at (\bx, -0.12) {\i};
+  }
+
+  % ---- Permanent balls (at or below threshold of 3, all overlays) ----
+  \foreach \bin in {0,...,5} {
+    \foreach \j in {1,...,3} {
+      \pgfmathsetmacro{\bx}{\bin*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+  }
+
+  % ==== Overlay 1: Initial state — extra balls above threshold, all grey ====
+  \only<1>{
+    % Bin 0: 1 extra (level 4)
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+
+    % Bin 1: 4 extra (levels 4–7)
+    \foreach \j in {4,...,7} {
+      \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+
+    % Bin 2: 2 extra (levels 4–5)
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+
+    % Bin 3: 0 extra
+
+    % Bin 4: 3 extra (levels 4–6)
+    \foreach \j in {4,...,6} {
+      \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+
+    % Bin 5: 2 extra (levels 4–5)
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+  }
+
+  % ==== Overlay 2: Slice line + red highlighted balls ====
+  \only<2>{
+    % Dashed slice line between levels 3 and 4  (y ≈ 1.77)
+    \draw[dashed, line width=1.5pt, red!70!black] (-0.3,1.77) -- (7.45,1.77);
+    \node[right, red!70!black, font=\Large] at (7.5,1.77) {\reflectbox{\ding{34}}};
+
+    % Bin 0: level 4 in red
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt,
+          line width=1pt, fill=red!25] at (\bx,\byy) {};
+
+    % Bin 1: levels 4–7 in red
+    \foreach \j in {4,...,7} {
+      \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 2: levels 4–5 in red
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 4: levels 4–6 in red
+    \foreach \j in {4,...,6} {
+      \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 5: levels 4–5 in red
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=red!25] at (\bx,\byy) {};
+    }
+  }
+
+  % ==== Overlay 3: 12 floating balls in a row ====
+  \only<3>{
+    % Faded slice line
+    \draw[dashed, line width=1pt, red!30] (-0.3,1.77) -- (7.45,1.77);
+
+    % 12 floating sliced balls in a row at y = 5.0
+    \foreach \k in {0,...,11} {
+      \pgfmathsetmacro{\fx}{0.45+\k*0.56}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=red!25] at (\fx, 5.0) {};
+    }
+  }
+
+  % ==== Overlay 4: Final state — uneven spread, green balls ====
+  \only<4>{
+    % Bin 0: +2 green (levels 4–5) → total 5
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=green!20] at (\bx,\byy) {};
+    }
+
+    % Bin 1: +3 green (levels 4–6) → total 6
+    \foreach \j in {4,5,6} {
+      \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=green!20] at (\bx,\byy) {};
+    }
+
+    % Bin 2: +1 green (level 4) → total 4
+    \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+    \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt,
+          line width=1pt, fill=green!20] at (\bx,\byy) {};
+
+    % Bin 3: +2 green (levels 4–5) → total 5
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=green!20] at (\bx,\byy) {};
+    }
+
+    % Bin 4: +1 green (level 4) → total 4
+    \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+    \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt,
+          line width=1pt, fill=green!20] at (\bx,\byy) {};
+
+    % Bin 5: +3 green (levels 4–6) → total 6
+    \foreach \j in {4,5,6} {
+      \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt,
+            line width=1pt, fill=green!20] at (\bx,\byy) {};
+    }
+  }
+
+\end{tikzpicture}
+\end{center}
+
+\vfill
+\only<1-4>{1. \textbf{Slice} off the jagged surface}
+\only<3-4>{\\2. \textbf{Spread} balls to their second-choice bins}
+
+\end{frame}
+% ===== END TEST ANIMATION =====
+
+\begin{frame}{Slice and Spread Reduces Overload}
+
+  \vfill
+\textbf{Claim: }Slice and spread reduces overload.
+
+\textbf{Proof (Sketch):}
+  \begin{enumerate}
+    \item \textbf{Fact:} After throwing $m >> n$ balls into $n$ bins, every bin has load $m/n \pm \tilde{O}(\sqrt{m/n})$.
+    \item \textbf{Before:} Every bin has load $m/n \pm \tilde{O}(\sqrt{m/n})$.
+    \item \textbf{After:} Every bin has load $m/n \pm \tilde{O}(m/n)^{1/4}$.
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}{What's the Recourse?}
+  \vfill
+
+  \textbf{Options:}
+  \begin{enumerate}[(A)]
+    \item $0$
+    \item $1$
+    \item $\#$ balls being sliced off
+    \item other?
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Repeating Slice and Spread}
+
+  \vfill
+
+
+  Good overload, good recourse...Could we keep slicing and spreading to get better and better overload?
+
+  \textbf{Proposition:}
+  Test
+
+\end{frame}
+
+\begin{frame}{Algorithmic Question}
+
+  \vfill
+
+  \textbf{Question:} Which balls will we slice in each round?
+
+  \textbf{Option 1:} Scrape off the top
+  \textbf{Option 2:} Maintain a priority queue in each bin
+  \textbf{What we do:} Assign every ball a round...
+
+\end{frame}
+
+\begin{frame}{Challenge $1$: Slicing Failures}
+
+  \vfill
+
+  \textbf{Challenge:} There may not be enough fresh randomness in each bin. Not enough balls assigned to that round in that bin.
+
+  \textbf{Result:} We won't be able to slice off enough balls, and so the jaggedness will remain.
+
+\end{frame}
+
+\begin{frame}{Challenge $2$: Spreading Failures}
+
+  \vfill
+
+  \textbf{Challenge:}Spreading step got unlucky and didn't spread very evenly. There's more jaggedness than we want
+
+  \textbf{Result:} Either we have to slice more balls than we want and may not get the overload down, or we have to slice less balls than we want and may not get the jaggedness down.
+
+\end{frame}
+
 \begin{frame}[plain]
   \vspace{5mm}
   \begin{center}
