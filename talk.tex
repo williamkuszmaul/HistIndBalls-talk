@@ -3123,13 +3123,88 @@ After $O(\log \log (m/n))$ rounds of slice-and-spread, the cumulative overload i
 
 \begin{frame}{Algorithmic Question}
 
-  \vfill
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+  \def\bw{0.9}
+  \def\by{0}
+  \def\bgap{0.35}
+  \def\bs{0.48cm}
+  \def\bsp{0.58}
 
-  \textbf{Question:} Which balls will we slice in each round?
+  % Draw 6 bins
+  \foreach \i in {0,...,5} {
+    \pgfmathsetmacro{\xx}{\i*(\bw+\bgap)}
+    \draw[line width=1pt, black!80] (\xx,\by) -- (\xx,4.2);
+    \draw[line width=1pt, black!80] ({\xx+\bw},\by) -- ({\xx+\bw},4.2);
+    \draw[line width=1pt, black!80] (\xx,\by) -- ({\xx+\bw},\by);
+  }
 
-  \textbf{Option 1:} Scrape off the top
-  \textbf{Option 2:} Maintain a priority queue in each bin
-  \textbf{What we do:} Assign every ball a round...
+  % Grey balls (3 per bin)
+  \foreach \bin in {0,...,5} {
+    \foreach \j in {1,...,3} {
+      \pgfmathsetmacro{\bx}{\bin*(\bw+\bgap)+0.5*\bw}
+      \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.8pt, fill=black!15] at (\bx,\byy) {};
+    }
+  }
+
+  % Green balls above threshold (post-spread)
+  % Bin 0: +2 green (levels 4-5)
+  \foreach \j in {4,5} {
+    \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=green!20] at (\bx,\byy) {};
+  }
+  % Bin 1: +3 green (levels 4-6)
+  \foreach \j in {4,5,6} {
+    \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=green!20] at (\bx,\byy) {};
+  }
+  % Bin 2: +1 green (level 4)
+  \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+  \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=green!20] at (\bx,\byy) {};
+  % Bin 3: +2 green (levels 4-5)
+  \foreach \j in {4,5} {
+    \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=green!20] at (\bx,\byy) {};
+  }
+  % Bin 4: +1 green (level 4)
+  \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+  \pgfmathsetmacro{\byy}{\by+0.32+(4-1)*\bsp}
+  \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=green!20] at (\bx,\byy) {};
+  % Bin 5: +3 green (levels 4-6)
+  \foreach \j in {4,5,6} {
+    \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+    \pgfmathsetmacro{\byy}{\by+0.32+(\j-1)*\bsp}
+    \node[circle, draw=green!50!black, minimum size=\bs, inner sep=0pt, line width=1pt, fill=green!20] at (\bx,\byy) {};
+  }
+
+  % Dashed slice line at height of 4 balls (between levels 4 and 5)
+  \pgfmathsetmacro{\sliceY}{\by+0.32+3*\bsp+0.5*\bsp}
+  \draw[dashed, line width=1.5pt, red!70!black] (-0.3,\sliceY) -- (7.45,\sliceY);
+  \node[left, red!70!black, font=\Large] at (-0.5,\sliceY) {\ding{34}};
+
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\textbf{Question:} Which balls do we slice in each round?
+\end{center}
+
+\pause
+
+\hspace*{-0.5cm}\parbox{\dimexpr\textwidth+0.5cm}{%
+\begin{itemize}
+  \item \textbf{Option 1:} Scrape off the top \hfill {\color{red}\ding{55}} \small Reuses stale randomness \normalsize
+  \pause
+  \item \textbf{Option 2:} Priority queue per bin \hfill {\color{red}\ding{55}} \small Exploding recourse \normalsize
+  \pause
+  \item \textbf{Our approach:} Option 2 + Assign every ball a \textbf{round number}
+\end{itemize}
+}
 
 \end{frame}
 
