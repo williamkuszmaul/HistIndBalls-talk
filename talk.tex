@@ -2725,17 +2725,346 @@ After throwing $m \gg n$ balls uniformly at random into $n$ bins, the bin loads 
 \end{frame}
 % ===== END GENERAL HISTOGRAM =====
 
+\begin{frame}{What's the Recourse?}\pause
+\noindent\hspace*{-0.5\dimexpr\paperwidth-\textwidth\relax}%
+\makebox[\paperwidth][c]{%
+\begin{tikzpicture}[x=1cm,y=1cm,scale=0.95]
+  \path[use as bounding box] (-6.4,-3.2) rectangle (6.4,3.2);
+
+  % Separator line
+  \draw[dash pattern=on 4pt off 3pt, line width=0.8pt, black!35] (0,-3.0) -- (0,2.8);
+
+  % Parameters (scaled down to fit two worlds side by side)
+  \def\bw{0.6}
+  \def\bgap{0.15}
+  \def\bs{0.32cm}
+  \def\bsp{0.40}
+  \def\boffset{0.22}
+  \def\biny{-2.0}
+  \pgfmathsetmacro{\wallTop}{\biny + 2.85}
+  \pgfmathsetmacro{\sliceY}{\biny + \boffset + 2.5*\bsp}
+
+  % Draw both worlds
+  \foreach \wx in {-5.375, 1.025} {
+    % 6 bins
+    \foreach \i in {0,...,5} {
+      \pgfmathsetmacro{\xx}{\wx + \i*(\bw+\bgap)}
+      \draw[line width=0.8pt, black!80] (\xx,\biny) -- (\xx,\wallTop);
+      \draw[line width=0.8pt, black!80] ({\xx+\bw},\biny) -- ({\xx+\bw},\wallTop);
+      \draw[line width=0.8pt, black!80] (\xx,\biny) -- ({\xx+\bw},\biny);
+    }
+
+    % Permanent balls (3 per bin)
+    \foreach \bin in {0,...,5} {
+      \foreach \j in {1,...,3} {
+        \pgfmathsetmacro{\bx}{\wx + \bin*(\bw+\bgap) + 0.5*\bw}
+        \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+        \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.6pt, fill=black!15] at (\bx,\byy) {};
+      }
+    }
+
+    % Slice line
+    \pgfmathsetmacro{\sliceLeft}{\wx - 0.15}
+    \pgfmathsetmacro{\sliceRight}{\wx + 5*(\bw+\bgap) + \bw + 0.1}
+    \draw[dashed, line width=1.2pt, red!70!black] (\sliceLeft,\sliceY) -- (\sliceRight,\sliceY);
+
+    % Scissors
+    \pgfmathsetmacro{\scissX}{\wx - 0.3}
+    \node[left, red!70!black, font=\normalsize] at (\scissX,\sliceY) {\ding{34}};
+
+    % Red balls above threshold
+    % Bin 0: level 4 (1 extra)
+    \pgfmathsetmacro{\bx}{\wx + 0*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + 3*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+
+    % Bin 1: levels 4-7 (4 extra)
+    \foreach \j in {4,...,7} {
+      \pgfmathsetmacro{\bx}{\wx + 1*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 2: levels 4-5 (2 extra)
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{\wx + 2*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 3: 0 extra
+
+    % Bin 4: levels 4-6 (3 extra)
+    \foreach \j in {4,...,6} {
+      \pgfmathsetmacro{\bx}{\wx + 4*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 5: levels 4-5 (2 extra)
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{\wx + 5*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+  }
+
+  % Blue ball x on right world, bin 2 (level 6, on top of 5 existing balls)
+  \pgfmathsetmacro{\bx}{1.025 + 2*(\bw+\bgap) + 0.5*\bw}
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 5*\bsp}
+  \node[circle, draw=blue!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=blue!30, font=\tiny] at (\bx,\byy) {$x$};
+
+  % World labels below bins
+  \node[font=\normalsize] at (-3.2, -2.55) {Computing $A_S$};
+  \node[font=\normalsize] at (3.2, -2.55) {Computing $A_{S \cup \{x\}}$};
+
+\end{tikzpicture}
+}%
+\end{frame}
+
+% ===== Duplicate: blue ball x inserted at level 3 in bin 2, pushes grey above line =====
 \begin{frame}{What's the Recourse?}
-  \vfill
+\noindent\hspace*{-0.5\dimexpr\paperwidth-\textwidth\relax}%
+\makebox[\paperwidth][c]{%
+\begin{tikzpicture}[x=1cm,y=1cm,scale=0.95]
+  \path[use as bounding box] (-6.4,-3.2) rectangle (6.4,3.2);
 
-  \textbf{Options:}
-  \begin{enumerate}[(A)]
-    \item $0$
-    \item $1$
-    \item $\#$ balls being sliced off
-    \item other?
-  \end{enumerate}
+  % Separator line
+  \draw[dash pattern=on 4pt off 3pt, line width=0.8pt, black!35] (0,-3.0) -- (0,2.8);
 
+  % Parameters
+  \def\bw{0.6}
+  \def\bgap{0.15}
+  \def\bs{0.32cm}
+  \def\bsp{0.40}
+  \def\boffset{0.22}
+  \def\biny{-2.0}
+  \pgfmathsetmacro{\wallTop}{\biny + 2.85}
+  \pgfmathsetmacro{\sliceY}{\biny + \boffset + 2.5*\bsp}
+
+  % Draw both worlds (bins, base grey balls, slice line, scissors, red balls)
+  \foreach \wx in {-5.375, 1.025} {
+    % 6 bins
+    \foreach \i in {0,...,5} {
+      \pgfmathsetmacro{\xx}{\wx + \i*(\bw+\bgap)}
+      \draw[line width=0.8pt, black!80] (\xx,\biny) -- (\xx,\wallTop);
+      \draw[line width=0.8pt, black!80] ({\xx+\bw},\biny) -- ({\xx+\bw},\wallTop);
+      \draw[line width=0.8pt, black!80] (\xx,\biny) -- ({\xx+\bw},\biny);
+    }
+
+    % Permanent balls (3 per bin)
+    \foreach \bin in {0,...,5} {
+      \foreach \j in {1,...,3} {
+        \pgfmathsetmacro{\bx}{\wx + \bin*(\bw+\bgap) + 0.5*\bw}
+        \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+        \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.6pt, fill=black!15] at (\bx,\byy) {};
+      }
+    }
+
+    % Slice line
+    \pgfmathsetmacro{\sliceLeft}{\wx - 0.15}
+    \pgfmathsetmacro{\sliceRight}{\wx + 5*(\bw+\bgap) + \bw + 0.1}
+    \draw[dashed, line width=1.2pt, red!70!black] (\sliceLeft,\sliceY) -- (\sliceRight,\sliceY);
+
+    % Scissors
+    \pgfmathsetmacro{\scissX}{\wx - 0.3}
+    \node[left, red!70!black, font=\normalsize] at (\scissX,\sliceY) {\ding{34}};
+
+    % Red balls above threshold
+    % Bin 0: level 4 (1 extra)
+    \pgfmathsetmacro{\bx}{\wx + 0*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + 3*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+
+    % Bin 1: levels 4-7 (4 extra)
+    \foreach \j in {4,...,7} {
+      \pgfmathsetmacro{\bx}{\wx + 1*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 2: levels 4-5 (2 extra)
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{\wx + 2*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 3: 0 extra
+
+    % Bin 4: levels 4-6 (3 extra)
+    \foreach \j in {4,...,6} {
+      \pgfmathsetmacro{\bx}{\wx + 4*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+
+    % Bin 5: levels 4-5 (2 extra)
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{\wx + 5*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+  }
+
+  % === Right-world bin 2 corrections: x inserted at level 3 ===
+  % Blue ball x at level 3 (covers the grey ball drawn by foreach)
+  \pgfmathsetmacro{\bx}{1.025 + 2*(\bw+\bgap) + 0.5*\bw}
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 2*\bsp}
+  \node[circle, draw=blue!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=blue!30, font=\tiny] at (\bx,\byy) {$x$};
+  % Grey ball pushed up to level 4 (covers the red ball from foreach)
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 3*\bsp}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.6pt, fill=black!15] at (\bx,\byy) {};
+  % Red ball pushed up to level 6 (new)
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 5*\bsp}
+  \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+
+  % World labels below bins
+  \node[font=\normalsize] at (-3.2, -2.55) {Computing $A_S$};
+  \node[font=\normalsize] at (3.2, -2.55) {Computing $A_{S \cup \{x\}}$};
+
+\end{tikzpicture}
+}%
+\end{frame}
+
+% ===== Duplicate: blue ball x in bin 3, slice line moves up on right =====
+\begin{frame}{What's the Recourse?}
+\noindent\hspace*{-0.5\dimexpr\paperwidth-\textwidth\relax}%
+\makebox[\paperwidth][c]{%
+\begin{tikzpicture}[x=1cm,y=1cm,scale=0.95]
+  \path[use as bounding box] (-6.4,-3.2) rectangle (6.4,3.2);
+
+  % Separator line
+  \draw[dash pattern=on 4pt off 3pt, line width=0.8pt, black!35] (0,-3.0) -- (0,2.8);
+
+  % Parameters
+  \def\bw{0.6}
+  \def\bgap{0.15}
+  \def\bs{0.32cm}
+  \def\bsp{0.40}
+  \def\boffset{0.22}
+  \def\biny{-2.0}
+  \pgfmathsetmacro{\wallTop}{\biny + 2.85}
+  \pgfmathsetmacro{\sliceYL}{\biny + \boffset + 2.5*\bsp}
+  \pgfmathsetmacro{\sliceYR}{\biny + \boffset + 3.5*\bsp}
+
+  % Draw bin walls for both worlds
+  \foreach \wx in {-5.375, 1.025} {
+    \foreach \i in {0,...,5} {
+      \pgfmathsetmacro{\xx}{\wx + \i*(\bw+\bgap)}
+      \draw[line width=0.8pt, black!80] (\xx,\biny) -- (\xx,\wallTop);
+      \draw[line width=0.8pt, black!80] ({\xx+\bw},\biny) -- ({\xx+\bw},\wallTop);
+      \draw[line width=0.8pt, black!80] (\xx,\biny) -- ({\xx+\bw},\biny);
+    }
+  }
+
+  % === LEFT WORLD (unchanged, slice between levels 3-4) ===
+  % Grey balls (3 per bin)
+  \foreach \bin in {0,...,5} {
+    \foreach \j in {1,...,3} {
+      \pgfmathsetmacro{\bx}{-5.375 + \bin*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.6pt, fill=black!15] at (\bx,\byy) {};
+    }
+  }
+  % Left slice line & scissors
+  \draw[dashed, line width=1.2pt, red!70!black] ({-5.375 - 0.15},\sliceYL) -- ({-5.375 + 5*(\bw+\bgap) + \bw + 0.1},\sliceYL);
+  \node[left, red!70!black, font=\normalsize] at ({-5.375 - 0.3},\sliceYL) {\ding{34}};
+  % Left red balls above threshold (levels 4+)
+  % Bin 0: level 4
+  \pgfmathsetmacro{\bx}{-5.375 + 0*(\bw+\bgap) + 0.5*\bw}
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 3*\bsp}
+  \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  % Bin 1: levels 4-7
+  \foreach \j in {4,...,7} {
+    \pgfmathsetmacro{\bx}{-5.375 + 1*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  }
+  % Bin 2: levels 4-5
+  \foreach \j in {4,5} {
+    \pgfmathsetmacro{\bx}{-5.375 + 2*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  }
+  % Bin 3: 0 extra
+  % Bin 4: levels 4-6
+  \foreach \j in {4,...,6} {
+    \pgfmathsetmacro{\bx}{-5.375 + 4*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  }
+  % Bin 5: levels 4-5
+  \foreach \j in {4,5} {
+    \pgfmathsetmacro{\bx}{-5.375 + 5*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  }
+
+  % === RIGHT WORLD (slice moved up to between levels 4-5, same red balls) ===
+  % Grey balls (3 per bin)
+  \foreach \bin in {0,...,5} {
+    \foreach \j in {1,...,3} {
+      \pgfmathsetmacro{\bx}{1.025 + \bin*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.6pt, fill=black!15] at (\bx,\byy) {};
+    }
+  }
+  % Red balls above old threshold (same as left world)
+  % Bin 0: level 4
+  \pgfmathsetmacro{\bx}{1.025 + 0*(\bw+\bgap) + 0.5*\bw}
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 3*\bsp}
+  \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  % Bin 1: levels 4-7
+  \foreach \j in {4,...,7} {
+    \pgfmathsetmacro{\bx}{1.025 + 1*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  }
+  % Bin 2: levels 4-5
+  \foreach \j in {4,5} {
+    \pgfmathsetmacro{\bx}{1.025 + 2*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  }
+  % Bin 3: 0 extra (same as left)
+  % Bin 4: levels 4-6
+  \foreach \j in {4,...,6} {
+    \pgfmathsetmacro{\bx}{1.025 + 4*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  }
+  % Bin 5: levels 4-5
+  \foreach \j in {4,5} {
+    \pgfmathsetmacro{\bx}{1.025 + 5*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  }
+  % Blue ball x in bin 3 at level 4
+  \pgfmathsetmacro{\bx}{1.025 + 3*(\bw+\bgap) + 0.5*\bw}
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 3*\bsp}
+  \node[circle, draw=blue!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=blue!30, font=\tiny] at (\bx,\byy) {$x$};
+  % Right slice line & scissors (higher)
+  \draw[dashed, line width=1.2pt, red!70!black] ({1.025 - 0.15},\sliceYR) -- ({1.025 + 5*(\bw+\bgap) + \bw + 0.1},\sliceYR);
+  \node[left, red!70!black, font=\normalsize] at ({1.025 - 0.3},\sliceYR) {\ding{34}};
+
+  % World labels below bins
+  \node[font=\normalsize] at (-3.2, -2.55) {Computing $A_S$};
+  \node[font=\normalsize] at (3.2, -2.55) {Computing $A_{S \cup \{x\}}$};
+
+  % Overlay 2: big red X crossing out the right picture
+  \only<2->{
+    \draw[red!70!black, line width=3pt] (0.6, -2.3) -- (5.8, 2.6);
+    \draw[red!70!black, line width=3pt] (0.6, 2.6) -- (5.8, -2.3);
+  }
+
+\end{tikzpicture}
+}%
+
+\only<2->{
+\vfill
+To keep recourse low, fix the slicing line (as a function of the maximum number of balls in the system).
+}
 \end{frame}
 
 \begin{frame}{Repeating Slice and Spread}
