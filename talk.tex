@@ -2925,6 +2925,83 @@ Balls sliced away: $m^{\prime} \approx n \cdot (m/n)^{1/2} = (mn)^{1/2}$
 \end{frame}
 % ===== END GENERAL HISTOGRAM =====
 
+\begin{frame}{Slice and Spread}
+\begin{itemize}
+  \item Overload: $(m/n)^{1/2} \;\to\; (m/n)^{1/4}$
+  \only<2->{\item History independent? \only<3->{Yes!}}
+  \only<4->{\item Recourse: \only<5->{$1$}}
+\end{itemize}
+
+% ---- Overlay 6: recourse picture (blue x inserted at level 3, pushes grey up) ----
+\only<6>{
+\noindent\hspace*{-0.5\dimexpr\paperwidth-\textwidth\relax}%
+\makebox[\paperwidth][c]{%
+\begin{tikzpicture}[x=1cm,y=1cm,scale=0.95]
+  \path[use as bounding box] (-6.4,-3.2) rectangle (6.4,3.2);
+  \draw[dash pattern=on 4pt off 3pt, line width=0.8pt, black!35] (0,-3.0) -- (0,2.8);
+  \def\bw{0.6}\def\bgap{0.15}\def\bs{0.32cm}\def\bsp{0.40}\def\boffset{0.22}\def\biny{-2.0}
+  \pgfmathsetmacro{\wallTop}{\biny + 2.85}
+  \pgfmathsetmacro{\sliceY}{\biny + \boffset + 2.5*\bsp}
+  \foreach \wx in {-5.375, 1.025} {
+    \foreach \i in {0,...,5} {
+      \pgfmathsetmacro{\xx}{\wx + \i*(\bw+\bgap)}
+      \draw[line width=0.8pt, black!80] (\xx,\biny) -- (\xx,\wallTop);
+      \draw[line width=0.8pt, black!80] ({\xx+\bw},\biny) -- ({\xx+\bw},\wallTop);
+      \draw[line width=0.8pt, black!80] (\xx,\biny) -- ({\xx+\bw},\biny);
+    }
+    \foreach \bin in {0,...,5} {
+      \foreach \j in {1,...,3} {
+        \pgfmathsetmacro{\bx}{\wx + \bin*(\bw+\bgap) + 0.5*\bw}
+        \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+        \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.6pt, fill=black!15] at (\bx,\byy) {};
+      }
+    }
+    \pgfmathsetmacro{\sliceLeft}{\wx - 0.15}
+    \pgfmathsetmacro{\sliceRight}{\wx + 5*(\bw+\bgap) + \bw + 0.1}
+    \draw[dashed, line width=1.2pt, red!70!black] (\sliceLeft,\sliceY) -- (\sliceRight,\sliceY);
+    \pgfmathsetmacro{\scissX}{\wx - 0.3}
+    \node[left, red!70!black, font=\normalsize] at (\scissX,\sliceY) {\ding{34}};
+    % Red balls above threshold
+    \pgfmathsetmacro{\bx}{\wx + 0*(\bw+\bgap) + 0.5*\bw}
+    \pgfmathsetmacro{\byy}{\biny + \boffset + 3*\bsp}
+    \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    \foreach \j in {4,...,7} {
+      \pgfmathsetmacro{\bx}{\wx + 1*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{\wx + 2*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+    \foreach \j in {4,...,6} {
+      \pgfmathsetmacro{\bx}{\wx + 4*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+    \foreach \j in {4,5} {
+      \pgfmathsetmacro{\bx}{\wx + 5*(\bw+\bgap) + 0.5*\bw}
+      \pgfmathsetmacro{\byy}{\biny + \boffset + (\j-1)*\bsp}
+      \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+    }
+  }
+  % Right-world bin 2: blue x at level 3, grey pushed to level 4, red pushed to level 6
+  \pgfmathsetmacro{\bx}{1.025 + 2*(\bw+\bgap) + 0.5*\bw}
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 2*\bsp}
+  \node[circle, draw=blue!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=blue!30, font=\tiny] at (\bx,\byy) {$x$};
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 3*\bsp}
+  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.6pt, fill=black!15] at (\bx,\byy) {};
+  \pgfmathsetmacro{\byy}{\biny + \boffset + 5*\bsp}
+  \node[circle, draw=red!70!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=red!25] at (\bx,\byy) {};
+  % Labels
+  \node[font=\normalsize] at (-3.2, -2.55) {Computing $A_S$};
+  \node[font=\normalsize] at (3.2, -2.55) {Computing $A_{S \cup \{x\}}$};
+\end{tikzpicture}
+}%
+}
+\end{frame}
+
 \begin{frame}{What's the Recourse?}\pause
 \noindent\hspace*{-0.5\dimexpr\paperwidth-\textwidth\relax}%
 \makebox[\paperwidth][c]{%
