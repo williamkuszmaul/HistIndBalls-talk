@@ -308,7 +308,7 @@
   \begin{itemize}\setlength{\itemsep}{2pt}
 
     \item \textbf{2000:} NYT publishes internal CIA report \pause
-    \item Final state redacted successfully
+    % \item Final state redacted successfully
     \item However, during rendering, the hidden text could be captured
   \end{itemize}
   \pause
@@ -344,12 +344,12 @@
     \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h1s2) at (2*\sp, \h) {\small $\{x,y\}$};
     
     % Arrows
-    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, black!60, line width=1pt] 
       (h1s0.east) to[out=30, in=150] (h1s1.west);
-    \node[green!50!black, font=\scriptsize] at (0.5*\sp, \h+0.7) {Insert($x$)};
-    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+    \node[black!60, font=\normalsize] at (0.5*\sp, \h+0.7) {$+x$};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, black!60, line width=1pt] 
       (h1s1.east) to[out=30, in=150] (h1s2.west);
-    \node[green!50!black, font=\scriptsize] at (1.5*\sp, \h+0.7) {Insert($y$)};
+    \node[black!60, font=\normalsize] at (1.5*\sp, \h+0.7) {$+y$};
   }
   
   % Last circle: grey on frame 2, blue on frames 3+
@@ -358,9 +358,9 @@
   
   % Delete arrow (appears with History 1)
   \only<2->{
-    \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, black!60, line width=1pt] 
       (h1s2.east) to[out=30, in=150] (h1s3grey.west);
-    \node[red!70!black, font=\scriptsize] at (2.5*\sp, \h+0.7) {Delete($x$)};
+    \node[black!60, font=\normalsize] at (2.5*\sp, \h+0.7) {$-x$};
   }
   
   % === Adversary on the right side (appears on frame 3+) ===
@@ -378,19 +378,19 @@
     \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h2s2) at (2*\sp, \hh) {\small $\{x,y\}$};
     \node[draw, circle, minimum size=1.1cm, fill=blue!15, draw=blue!70!black, line width=1pt] (h2s3) at (3*\sp, \hh) {\small $\{y\}$};
     
-    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
-      (h2s0.east) to[out=30, in=150] (h2s1.west);
-    \node[green!50!black, font=\scriptsize] at (0.5*\sp, \hh+0.7) {Insert($y$)};
-    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
-      (h2s1.east) to[out=30, in=150] (h2s2.west);
-    \node[green!50!black, font=\scriptsize] at (1.5*\sp, \hh+0.7) {Insert($x$)};
     \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
+      (h2s0.east) to[out=30, in=150] (h2s1.west);
+    \node[red!70!black, font=\normalsize\bfseries] at (0.5*\sp, \hh+0.7) {$+y$};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
+      (h2s1.east) to[out=30, in=150] (h2s2.west);
+    \node[red!70!black, font=\normalsize\bfseries] at (1.5*\sp, \hh+0.7) {$+x$};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, black!60, line width=1pt] 
       (h2s2.east) to[out=30, in=150] (h2s3.west);
-    \node[red!70!black, font=\scriptsize] at (2.5*\sp, \hh+0.7) {Delete($x$)};
+    \node[black!60, font=\normalsize] at (2.5*\sp, \hh+0.7) {$-x$};
   }
   
-  % === History 3: ... -> {y} -> Insert(z) -> {y,z} -> Delete(z) -> {y} - appears on frame 5+ ===
-  \only<5->{
+  % === History 3: ... -> {y} -> Insert(z) -> {y,z} -> Delete(z) -> {y} - appears on frame 6+ ===
+  \only<6->{
     \node[font=\small, gray] at (-2.5, \hhh) {History 3:};
     \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h3s0) at (0, \hhh) {\small $\emptyset$};
     \node[draw, circle, minimum size=1.1cm, fill=black!5, line width=1pt] (h3s1) at (\sp, \hhh) {\small $\{y\}$};
@@ -400,12 +400,12 @@
     \draw[-{Stealth[length=2mm, width=1.5mm]}, gray, line width=1pt, dashed] 
       (h3s0.east) -- (h3s1.west);
     \node[gray, font=\scriptsize] at (0.5*\sp, \hhh+0.35) {$\cdots$};
-    \draw[-{Stealth[length=2mm, width=1.5mm]}, green!50!black, line width=1pt] 
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, black!60, line width=1pt] 
       (h3s1.east) to[out=30, in=150] (h3s2.west);
-    \node[green!50!black, font=\scriptsize] at (1.5*\sp, \hhh+0.7) {Insert($z$)};
-    \draw[-{Stealth[length=2mm, width=1.5mm]}, red!70!black, line width=1pt] 
+    \node[black!60, font=\normalsize] at (1.5*\sp, \hhh+0.7) {$+z$};
+    \draw[-{Stealth[length=2mm, width=1.5mm]}, black!60, line width=1pt] 
       (h3s2.east) to[out=30, in=150] (h3s3.west);
-    \node[red!70!black, font=\scriptsize] at (2.5*\sp, \hhh+0.7) {Delete($z$)};
+    \node[black!60, font=\normalsize] at (2.5*\sp, \hhh+0.7) {$-z$};
   }
   
 \end{tikzpicture}
@@ -940,7 +940,7 @@ $O(1)$ & $O(m/n)$ & {\scriptsize [Dietzfelbinger, Weidling '07]} &  \\
 
  \color{blue}
 
-If we want overload $O(1)$, our result is a new state of the art!
+Privacy can be leveraged as an \emph{algorithmic tool} to outperform non-private algorithms!
 
 \end{frame}
 
@@ -2419,7 +2419,7 @@ Two key observations: \pause
 
   % Elaine
   \node[portrait] (elaine) at (4, 0)
-    {\includegraphics[height=1.5cm]{Elaine.jpg}};
+    {\includegraphics[height=1.5cm]{Elaine.png}};
   \node[font=\scriptsize, below=1pt of elaine] {Elaine};
 
   % Bill
@@ -2477,7 +2477,7 @@ Two key observations: \pause
 
   % Elaine
   \node[portrait] (elaine) at (4, 0)
-    {\includegraphics[height=1.5cm]{Elaine.jpg}};
+    {\includegraphics[height=1.5cm]{Elaine.png}};
   \node[font=\scriptsize, below=1pt of elaine] {Elaine};
 
   % Bill
@@ -3488,33 +3488,21 @@ After $O(\log \log (m/n))$ rounds\ldots
     \node[above, font=\normalsize] at (0.5*\prefixW, \barH+0.1) {\textbf{Slice and Spread}};
     \node[above, font=\normalsize] at ({0.5*(\prefixW+\totalW)}, \barH+0.1) {\textbf{Patch}};
   
-    % Overlay 1: clean bars, no subdivision
-    \only<1>{}
-  
     % Subdivided into rounds (always visible)
-    \only<1>{
-      % Dividing lines
-      \foreach \g in {1,...,2} {
-        \pgfmathsetmacro{\gx}{\g*\gadgetW}
-        \draw[line width=0.7pt, blue!60!black] (\gx,0) -- (\gx,\barH);
-      }
-      % Labels inside: 1, 2, ...
-      \node[font=\small] at ({0.5*\gadgetW}, 0.5*\barH) {$1$};
-      \node[font=\small] at ({1.5*\gadgetW}, 0.5*\barH) {$2$};
-      \node[font=\small] at ({2.5*\gadgetW}, 0.5*\barH) {$\cdots$};
-  
-      % Underbrace below
-      \draw[decorate, decoration={brace, amplitude=5pt, mirror}, line width=0.7pt]
-        (0, -0.1) -- (\prefixW, -0.1);
-      \node[below, font=\small] at (0.5*\prefixW, -0.35) {$O(\log \log (m/n))$ rounds};
+    \foreach \g in {1,...,2} {
+      \pgfmathsetmacro{\gx}{\g*\gadgetW}
+      \draw[line width=0.7pt, blue!60!black] (\gx,0) -- (\gx,\barH);
     }
+    \node[font=\small] at ({0.5*\gadgetW}, 0.5*\barH) {$1$};
+    \node[font=\small] at ({1.5*\gadgetW}, 0.5*\barH) {$2$};
+    \node[font=\small] at ({2.5*\gadgetW}, 0.5*\barH) {$\cdots$};
   
     % Labels at left and right edges (always visible, fixed position)
     \node[font=\small, left] at (-0.1, 0.5*\barH) {start};
     \node[font=\small, right] at ({\totalW+0.1}, 0.5*\barH) {finish};
 
     % Arrow from below pointing up at end of blue region
-    \only<2->{
+    \only<1->{
       \node[below, font=\small, text width=3.8cm, align=center] (here) at (\prefixW, -1.8)
         {\textbf{We are here:}\\[2pt]
          \begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}
@@ -3525,7 +3513,7 @@ After $O(\log \log (m/n))$ rounds\ldots
     }
 
     % Arrow from below pointing up at end of orange region
-    \only<3->{
+    \only<2->{
       \node[below, font=\small, text width=3.5cm, align=center] (goal) at (\totalW, -1.8)
         {\textbf{Final:}\\[2pt]
          \begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}
