@@ -3237,79 +3237,62 @@ After $O(\log \log (m/n))$ rounds\ldots
     \draw[line width=1.2pt, red!70!black] (\xx,\by) -- ({\xx+\bw},\by);
   }
 
-  % Grey balls below slice (3 per bin)
-  \foreach \bin in {0,...,5} {
-    \foreach \j in {1,...,3} {
-      \pgfmathsetmacro{\bx}{\bin*(\bw+\bgap)+0.5*\bw}
-      \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
-      \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
-    }
+  % Ball styles
+  \tikzset{
+    gb/.style={circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15},
+    kb/.style={circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny}
   }
+
+  % Bin 0: 4 balls, 2 orange — grey, orange, grey, orange
+  \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
+  \node[gb] at (\bx,{\by+0.30+0*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+1*\bsp}) {$k$};
+  \node[gb] at (\bx,{\by+0.30+2*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+3*\bsp}) {$k$};
+
+  % Bin 1: 7 balls, 4 orange — orange, grey, orange, grey, orange, orange, grey
+  \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
+  \node[kb] at (\bx,{\by+0.30+0*\bsp}) {$k$};
+  \node[gb] at (\bx,{\by+0.30+1*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+2*\bsp}) {$k$};
+  \node[gb] at (\bx,{\by+0.30+3*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+4*\bsp}) {$k$};
+  \node[kb] at (\bx,{\by+0.30+5*\bsp}) {$k$};
+  \node[gb] at (\bx,{\by+0.30+6*\bsp}) {};
+
+  % Bin 2: 5 balls, 0 orange — all grey
+  \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
+  \foreach \j in {0,...,4} {
+    \node[gb] at (\bx,{\by+0.30+\j*\bsp}) {};
+  }
+
+  % Bin 3: 3 balls, 1 orange — grey, orange, grey
+  \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
+  \node[gb] at (\bx,{\by+0.30+0*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+1*\bsp}) {$k$};
+  \node[gb] at (\bx,{\by+0.30+2*\bsp}) {};
+
+  % Bin 4: 6 balls, 3 orange — grey, orange, grey, orange, grey, orange
+  \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
+  \node[gb] at (\bx,{\by+0.30+0*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+1*\bsp}) {$k$};
+  \node[gb] at (\bx,{\by+0.30+2*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+3*\bsp}) {$k$};
+  \node[gb] at (\bx,{\by+0.30+4*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+5*\bsp}) {$k$};
+
+  % Bin 5: 5 balls, 1 orange — grey, grey, orange, grey, grey
+  \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
+  \node[gb] at (\bx,{\by+0.30+0*\bsp}) {};
+  \node[gb] at (\bx,{\by+0.30+1*\bsp}) {};
+  \node[kb] at (\bx,{\by+0.30+2*\bsp}) {$k$};
+  \node[gb] at (\bx,{\by+0.30+3*\bsp}) {};
+  \node[gb] at (\bx,{\by+0.30+4*\bsp}) {};
 
   % Slice line
   \pgfmathsetmacro{\sliceY}{\by+0.30+2.5*\bsp}
   \draw[dashed, line width=1.2pt, red!70!black] (-0.3,\sliceY) -- (7.45,\sliceY);
   \node[left, red!70!black, font=\large] at (-0.5,\sliceY) {\ding{34}};
-
-  % Extra grey balls above the slice line
-  % Bin 0 (bin 1): load 4, 1 ball above line
-  \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\byy}{\by+0.30+3*\bsp}
-  \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
-  % Bin 1 (bin 2): load 7, 4 balls above line
-  \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
-  \foreach \j in {4,...,7} {
-    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 2 (bin 3): load 5, 2 balls above line
-  \pgfmathsetmacro{\bx}{2*(\bw+\bgap)+0.5*\bw}
-  \foreach \j in {4,5} {
-    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 3 (bin 4): load 3, 0 balls above line
-  % Bin 4 (bin 5): load 6, 3 balls above line
-  \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
-  \foreach \j in {4,...,6} {
-    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
-  }
-  % Bin 5 (bin 6): load 5, 2 balls above line
-  \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
-  \foreach \j in {4,5} {
-    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
-    \node[circle, draw, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=black!15] at (\bx,\byy) {};
-  }
-
-  % Orange round-k overlays on topmost N balls
-  % Bin 0 (bin 1): top 2 → levels 3,4
-  \pgfmathsetmacro{\bx}{0*(\bw+\bgap)+0.5*\bw}
-  \foreach \j in {3,4} {
-    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
-    \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
-  }
-  % Bin 1 (bin 2): top 4 → levels 4,5,6,7
-  \pgfmathsetmacro{\bx}{1*(\bw+\bgap)+0.5*\bw}
-  \foreach \j in {4,...,7} {
-    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
-    \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
-  }
-  % Bin 2 (bin 3): 0 round-k
-  % Bin 3 (bin 4): top 1 → level 3
-  \pgfmathsetmacro{\bx}{3*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\byy}{\by+0.30+2*\bsp}
-  \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
-  % Bin 4 (bin 5): top 3 → levels 4,5,6
-  \pgfmathsetmacro{\bx}{4*(\bw+\bgap)+0.5*\bw}
-  \foreach \j in {4,...,6} {
-    \pgfmathsetmacro{\byy}{\by+0.30+(\j-1)*\bsp}
-    \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
-  }
-  % Bin 5 (bin 6): top 1 → level 5
-  \pgfmathsetmacro{\bx}{5*(\bw+\bgap)+0.5*\bw}
-  \pgfmathsetmacro{\byy}{\by+0.30+4*\bsp}
-  \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!30, font=\tiny] at (\bx,\byy) {$k$};
 
   % Legend
   \node[right, font=\small] at (8.0, 2.5) {\tikz\node[circle, draw=orange!80!black, minimum size=0.35cm, inner sep=0pt, fill=orange!30, font=\tiny]{$k$}; = round $k$ ball};
