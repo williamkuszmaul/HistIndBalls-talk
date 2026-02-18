@@ -2978,7 +2978,7 @@ Balls sliced away: $m^{\prime} \approx n \cdot (m/n)^{1/2} = (mn)^{1/2}$
 \begin{itemize}
   \item Overload: $(m/n)^{1/2} \;\to\; (m/n)^{1/4}$
   \only<2->{\item History independent? \only<3->{Yes!}}
-  \only<4->{\item Recourse: \only<5->{$1$}}
+  \only<4->{\item Recourse: \only<5->{$1^{*}$}}
 \end{itemize}
 
 % ---- Overlay 6-7: recourse picture (blue x inserted at level 3, pushes grey up) ----
@@ -3052,11 +3052,11 @@ Balls sliced away: $m^{\prime} \approx n \cdot (m/n)^{1/2} = (mn)^{1/2}$
     % Left picture, bin 2, top grey ball (level 3) turns orange
     \pgfmathsetmacro{\bxLO}{-5.375 + 2*(\bw+\bgap) + 0.5*\bw}
     \pgfmathsetmacro{\byyLO}{\biny + \boffset + 2*\bsp}
-    \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!50] at (\bxLO,\byyLO) {};
-    % Right picture, bin 2, grey ball above blue x (level 4) turns orange
+    \node[circle, draw=green!60!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=green!40] at (\bxLO,\byyLO) {};
+    % Right picture, bin 2, grey ball above blue x (level 4) turns green
     \pgfmathsetmacro{\bxRO}{1.025 + 2*(\bw+\bgap) + 0.5*\bw}
     \pgfmathsetmacro{\byyRO}{\biny + \boffset + 3*\bsp}
-    \node[circle, draw=orange!80!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=orange!50] at (\bxRO,\byyRO) {};
+    \node[circle, draw=green!60!black, minimum size=\bs, inner sep=0pt, line width=0.7pt, fill=green!40] at (\bxRO,\byyRO) {};
   }
 \end{tikzpicture}
 }%
