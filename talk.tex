@@ -3511,6 +3511,44 @@ After $O(\log \log (m/n))$ rounds\ldots
 
 \end{frame}
 
+\begin{frame}{Past Work (Not History Independent)} 
+
+  % \textbf{Past work on insertion-only case: }
+  % {\color{gray} [Azar, Broder, Karlin and Upfal '94]
+  % [Berenbrink, Czumaj, Steger, and V{\"o}cking '00][Dietzfelbinger and Weidling '07] 
+  % [Frieze and Petti '18] $\ldots$} \pause 
+  
+  \vspace{2mm}
+  \begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{}cccc@{}}
+  \toprule
+  \textbf{Overload} & \textbf{Recourse} & \textbf{Reference} & \textbf{Caveats} \\
+  \midrule
+  $O(\log \log n)$ & $0$ & {\scriptsize [ABKU '94] [BCSV '00]} & {\scriptsize insertion-only} \\
+  $O(1)$ & $O(\log (m/n))$ & {\scriptsize [Dietzfelbinger, Weidling '07]} & {\scriptsize insertion-only} \\
+  $\tilde{O}(\sqrt{m/n})$ & $O(1)$ & {\scriptsize [Frieze, Petti '18]} & {\scriptsize insertion-only} \\
+  $O(\log (m/n))$ & $0$ & {\scriptsize [Bansal, Kuszmaul '22]} & {\scriptsize no reinsertions} \\
+  $O(1)$ & $O(m/n)$ & {\scriptsize [Dietzfelbinger, Weidling '07]} &  \\
+  \bottomrule
+  \color{blue} $O(1)$ & \color{blue} $O(\log \log (m/n))$ & \color{blue} {\scriptsize [This Paper]} & \\ 
+  \bottomrule
+  \end{tabular}
+  \end{center}
+
+  
+  % But the fully dynamic case has remained largely open.
+  
+  % {\color{gray} [V{\"o}cking '99] [Dietzfelbinger and Weidling '07] [Bender, Conway, Farach-Colton, Kuszmaul, Tagliavini '21] [Bansal, Kuszmaul '22] $\ldots$} \pause
+  
+   \vspace{.2 cm}
+  
+   \color{blue}
+  
+  Privacy can be leveraged as an \emph{algorithmic tool} to outperform non-private algorithms!
+  
+  \end{frame}
+
 \begin{frame}[plain]
   \vspace{5mm}
   \begin{center}
